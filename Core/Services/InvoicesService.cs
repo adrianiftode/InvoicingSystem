@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Core.Repositories;
 
@@ -38,6 +37,25 @@ namespace Core.Services
                 //Item = invoice.Notes.LastOrDefault();
                 Item = note
             };
+        }
+
+        public async Task<Invoice> Create(CreateInvoiceRequest request)
+        {
+            if (await _invoicesRepository.GetByIdentifier(request.Identifier) != null)
+            {
+                return null;
+            }
+
+            var invoice = new Invoice
+            {
+                Amount = request.Amount,
+                Identifier = request.Identifier,
+                UpdatedBy = request.User.GetIdentity()
+            };
+
+            await _invoicesRepository.Create(invoice);
+
+            return invoice;
         }
     }
 }

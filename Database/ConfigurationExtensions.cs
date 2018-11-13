@@ -1,5 +1,6 @@
 ﻿using Core.Repositories;
 using Database.Repositories;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,5 +13,18 @@ namespace Database
             => services
             .AddDbContext<InvoicingContext>(opts => opts.UseSqlServer(configuration.GetConnectionString("Invoicing")))
             .AddTransient<IInvoicesRepository, InvoicesRepository>();
+
+        public static void UseMigrations(this IApplicationBuilder app, IConfiguration configuration)
+        {
+            if (configuration["Migrate"] == "true")
+            {
+                using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+                {
+                    var context = serviceScope.ServiceProvider.GetRequiredService<InvoicingContext>();
+
+                    context.Database.Migrate();
+                }
+            }
+        }
     }
 }

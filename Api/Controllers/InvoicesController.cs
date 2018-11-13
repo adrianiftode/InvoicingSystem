@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using Api.Models;
 using Core;
 using Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class InvoicesController : ControllerBase
     {
         private readonly IInvoicesService _invoicesService;
@@ -42,6 +44,26 @@ namespace Api.Controllers
             }
 
             return Ok(notes);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(201, Type = typeof(Invoice))]
+        [ProducesResponseType(400, Type = typeof(Invoice))]
+        public async Task<ActionResult<Invoice>> Create([FromBody]CreateInvoiceRequestModel request)
+        {
+            var invoice = await _invoicesService.Create(new CreateInvoiceRequest
+            {
+                Amount = request.Amount,
+                Identifier = request.Identifier,
+                User = User
+            });
+
+            if (invoice == null)
+            {
+                return BadRequest(new { error = "Invoice could not be created." });
+            }
+
+            return CreatedAtAction(nameof(Get), new { id = invoice.InvoiceId }, invoice);
         }
     }
 }

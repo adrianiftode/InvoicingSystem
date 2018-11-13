@@ -1,17 +1,12 @@
-﻿using System.IO;
-using System.Net;
-using Api.Authentication;
+﻿using Api.Authentication;
 using Core;
+using Database;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using Database;
-using Microsoft.AspNetCore.Authentication;
 
 namespace Api
 {
@@ -37,7 +32,8 @@ namespace Api
                 .AddRepositories(Configuration)
                 .AddCoreServices()
                 .AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,37 +46,11 @@ namespace Api
                 app.UseHsts();
             }
 
-            app.UseExceptionHandler(appError =>
-            {
-                appError.Run(async context =>
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    context.Response.ContentType = "application/json";
-
-                    var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-                    if (contextFeature != null)
-                    {
-                        var error = new
-                        {
-                            value = new[] { "Internal Server Error." },
-                            error = contextFeature.Error
-                        };
-
-                        using (var writer = new StreamWriter(context.Response.Body))
-                        {
-                            var serializer = new JsonSerializer
-                            {
-                                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                                
-                            };
-                            serializer.Serialize(writer, error);
-                            await writer.FlushAsync().ConfigureAwait(false);
-                        }
-                    }
-                });
-            });
-
+            app.UseCustomJsonErrors();
             app.UseMvc();
+
+
+            app.UseMigrations(Configuration);
         }
     }
 }

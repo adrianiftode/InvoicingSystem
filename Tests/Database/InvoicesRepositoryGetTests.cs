@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Tests.Database
 {
-    public class InvoicesRepositoryTests
+    public class InvoicesRepositoryGetTests
     {
         [Fact]
         public async Task GetById_WhenExists_ReturnsInvoice()

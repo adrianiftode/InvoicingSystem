@@ -2,6 +2,7 @@
 using Core.Repositories;
 using System.Linq;
 using System.Threading.Tasks;
+using Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace Database.Repositories
@@ -15,7 +16,7 @@ namespace Database.Repositories
             _context = context;
         }
 
-        public async Task<Core.Invoice> Get(int id)
+        public async Task<Invoice> Get(int id)
         {
             var entity = await _context.Invoices
                 .Include(c => c.Notes)
@@ -24,7 +25,16 @@ namespace Database.Repositories
             return entity;
         }
 
-        public async Task<IReadOnlyCollection<Core.Note>> GetNotesBy(int invoiceId)
+        public async Task<Invoice> GetByIdentifier(string identifier)
+        {
+            var entity = await _context.Invoices
+                .Include(c => c.Notes)
+                .FirstOrDefaultAsync(c => c.Identifier == identifier);
+
+            return entity;
+        }
+
+        public async Task<IReadOnlyCollection<Note>> GetNotesBy(int invoiceId)
         {
             var entity = await _context.Invoices
                 .Include(c => c.Notes)
@@ -32,5 +42,12 @@ namespace Database.Repositories
 
             return entity?.Notes.ToList();
         }
+
+        public async Task Create(Invoice invoice)
+        {
+            _context.Invoices.Add(invoice);
+            await _context.SaveChangesAsync();
+        }
     }
+
 }

@@ -1,6 +1,6 @@
-﻿using System.Net;
+﻿using FluentAssertions;
+using System.Net;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Tests.Fixtures;
 using Xunit;
 using Xunit.Abstractions;
@@ -26,7 +26,7 @@ namespace Tests.Functional
         public async Task Get_ShouldReturnExpectedResponse(string path, HttpStatusCode expectedStatusCode)
         {
             //Arrange
-            var client = _factory.CreateClient();
+            var client = _factory.CreateClient().WithApiKey("admin123");
 
             //Act
             var response = await client.GetAsync(path);
@@ -44,7 +44,7 @@ namespace Tests.Functional
         public async Task GetNotes_ShouldReturnExpectedResponse(string path, HttpStatusCode expectedStatusCode)
         {
             //Arrange
-            var client = _factory.CreateClient();
+            var client = _factory.CreateClient().WithApiKey("admin123");
 
             //Act
             var response = await client.GetAsync(path);
