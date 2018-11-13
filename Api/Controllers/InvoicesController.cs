@@ -48,7 +48,6 @@ namespace Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(Invoice))]
-        [ProducesResponseType(400, Type = typeof(Invoice))]
         public async Task<ActionResult<Invoice>> Create([FromBody]CreateInvoiceRequestModel request)
         {
             var invoice = await _invoicesService.Create(new CreateInvoiceRequest
@@ -64,6 +63,26 @@ namespace Api.Controllers
             }
 
             return CreatedAtAction(nameof(Get), new { id = invoice.InvoiceId }, invoice);
+        }
+
+        [HttpPut]
+        [ProducesResponseType(201, Type = typeof(Invoice))]
+        public async Task<ActionResult<Invoice>> Update([FromBody]UpdateInvoiceRequestModel request)
+        {
+            var invoice = await _invoicesService.Update(new UpdateInvoiceRequest
+            {
+                InvoiceId = request.InvoiceId,
+                Amount = request.Amount,
+                Identifier = request.Identifier,
+                User = User
+            });
+
+            if (invoice == null)
+            {
+                return BadRequest(new { error = "Invoice could not be updated." });
+            }
+
+            return invoice;
         }
     }
 }

@@ -8,12 +8,12 @@ using Xunit;
 
 namespace Tests.Core
 {
-    public class InvoiceServiceTests
+    public class CreateInvoiceTests
     {
         private readonly Mock<IInvoicesRepository> _repository;
         private readonly InvoicesService _sut;
 
-        public InvoiceServiceTests()
+        public CreateInvoiceTests()
         {
             _repository = new Mock<IInvoicesRepository>();
             _sut = new InvoicesService(_repository.Object);

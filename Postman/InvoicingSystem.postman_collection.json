@@ -39,6 +39,39 @@
 			"response": []
 		},
 		{
+			"name": "Update Invoice",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-Api-Key",
+						"type": "text",
+						"value": "admin123"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"identifier\" : \"INV-101\",\n\t\"amount\" : 120.50,\n\t\"invoiceId\" : 1\n}"
+				},
+				"url": {
+					"raw": "{{host}}/invoices",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"invoices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Invoice Get By Id",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true

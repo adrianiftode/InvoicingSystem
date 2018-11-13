@@ -9,5 +9,6 @@ namespace Core.Repositories
         Task<Invoice> GetByIdentifier(string identifier);
         Task<IReadOnlyCollection<Note>> GetNotesBy(int invoiceId);
         Task Create(Invoice invoice);
+        Task Update();
     }
 }

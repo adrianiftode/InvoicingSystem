@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Core.Repositories;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Core.Repositories;
 
 namespace Core.Services
 {
@@ -60,6 +60,35 @@ namespace Core.Services
 
             await _invoicesRepository.Create(invoice);
 
+            return invoice;
+        }
+
+        public async Task<Invoice> Update(UpdateInvoiceRequest updateInvoiceRequest)
+        {
+            var invoice = await _invoicesRepository.Get(updateInvoiceRequest.InvoiceId);
+
+            if (invoice == null)
+            {
+                return null;
+            }
+
+            if (invoice.UpdatedBy != updateInvoiceRequest.User.GetIdentity())
+            {
+                return null;
+            }
+
+            var withNewIdentifier = await _invoicesRepository.GetByIdentifier(updateInvoiceRequest.Identifier);
+
+            if (withNewIdentifier != null && withNewIdentifier.InvoiceId != invoice.InvoiceId)
+            {
+                return null;
+            }
+
+            invoice.UpdatedBy = updateInvoiceRequest.User.GetIdentity();
+            invoice.Identifier = updateInvoiceRequest.Identifier;
+            invoice.Amount = updateInvoiceRequest.Amount;
+
+            await _invoicesRepository.Update();
             return invoice;
         }
     }

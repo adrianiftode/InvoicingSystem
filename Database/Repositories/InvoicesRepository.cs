@@ -48,6 +48,7 @@ namespace Database.Repositories
             _context.Invoices.Add(invoice);
             await _context.SaveChangesAsync();
         }
-    }
 
+        public Task Update() => _context.SaveChangesAsync();
+    }
 }
