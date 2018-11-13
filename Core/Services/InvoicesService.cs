@@ -46,6 +46,11 @@ namespace Core.Services
                 return null;
             }
 
+            if (request.User.IsUser())
+            {
+                return null;
+            }
+
             var invoice = new Invoice
             {
                 Amount = request.Amount,

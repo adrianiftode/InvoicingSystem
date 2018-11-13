@@ -57,17 +57,15 @@ namespace Tests.Core
             _repository.Verify(c => c.Create(It.IsAny<Invoice>()), Times.Once);
         }
 
-        [Theory]
-        [InlineData("Admin")]
-        [InlineData("User")]
-        public async Task Create_WithAnyUserType_CreatesAnInvoice(string role)
+        [Fact]
+        public async Task Create_WithAdminType_CreatesAnInvoice()
         {
             //Arrange
             var request = new CreateInvoiceRequest
             {
                 Identifier = "INV-001",
                 Amount = 150.05m,
-                User = TestsHelpers.CreateUser("1", role)
+                User = TestsHelpers.CreateUser("1", "Admin")
             };
 
             //Act

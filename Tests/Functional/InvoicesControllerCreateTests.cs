@@ -116,7 +116,7 @@ namespace Tests.Functional
                     c.ConfigureTestServices(srv => srv.AddTransient(_ => invoicesRepositoryMock.Object));
                 })
                 .CreateClient()
-                .WithApiKey("user123");
+                .WithApiKey("admin123");
 
             //Act
             var response = await client.PostAsJsonAsync("/invoices", new
@@ -128,7 +128,7 @@ namespace Tests.Functional
             //Assert
             response.StatusCode.Should().Be(HttpStatusCode.Created);
             var content = await response.Content.ReadAsAsync<dynamic>();
-            ((string)content.updatedBy).Should().Be("3");
+            ((string)content.updatedBy).Should().Be("1");
         }
     }
 }
