@@ -9,10 +9,13 @@ namespace Database
 {
     public static class ConfigurationExtensions
     {
-        public static IServiceCollection AddRepositories(this IServiceCollection services, IConfiguration configuration) 
+        public static IServiceCollection AddRepositories(this IServiceCollection services, IConfiguration configuration)
             => services
-            .AddDbContext<InvoicingContext>(opts => opts.UseSqlServer(configuration.GetConnectionString("Invoicing")))
-            .AddTransient<IInvoicesRepository, InvoicesRepository>();
+                .AddDbContext<InvoicingContext>(opts =>
+                    opts.UseSqlServer(configuration.GetConnectionString("Invoicing")))
+                .AddTransient<IInvoicesRepository, InvoicesRepository>()
+                .AddTransient<INotesRepository, NotesRepository>()
+        ;
 
         public static void UseMigrations(this IApplicationBuilder app, IConfiguration configuration)
         {

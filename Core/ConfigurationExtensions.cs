@@ -8,6 +8,8 @@ namespace Core
     {
         public static IServiceCollection AddCoreServices(this IServiceCollection services) 
             => services
-            .AddTransient<IInvoicesService, InvoicesService>();
+            .AddTransient<IInvoicesService, InvoicesService>()
+            .AddTransient<INotesService, NotesService>()
+        ;
     }
 }

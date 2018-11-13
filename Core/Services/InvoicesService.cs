@@ -24,21 +24,6 @@ namespace Core.Services
             return notes;
         }
 
-        public async Task<AddNoteResponse> AddNote(AddNoteRequest request)
-        {
-            var invoice = await _invoicesRepository.Get(request.InvoiceId);
-
-            var note = invoice.AddNote(request.Text, request.User.GetIdentity());
-
-            //_invoicesRepository.Update(invoice);
-            //var note = await _invoicesRepository.GetNotes()
-            return new AddNoteResponse
-            {
-                //Item = invoice.Notes.LastOrDefault();
-                Item = note
-            };
-        }
-
         public async Task<Invoice> Create(CreateInvoiceRequest request)
         {
             if (await _invoicesRepository.GetByIdentifier(request.Identifier) != null)
@@ -63,30 +48,30 @@ namespace Core.Services
             return invoice;
         }
 
-        public async Task<Invoice> Update(UpdateInvoiceRequest updateInvoiceRequest)
+        public async Task<Invoice> Update(UpdateInvoiceRequest request)
         {
-            var invoice = await _invoicesRepository.Get(updateInvoiceRequest.InvoiceId);
+            var invoice = await _invoicesRepository.Get(request.InvoiceId);
 
             if (invoice == null)
             {
                 return null;
             }
 
-            if (invoice.UpdatedBy != updateInvoiceRequest.User.GetIdentity())
+            if (invoice.UpdatedBy != request.User.GetIdentity())
             {
                 return null;
             }
 
-            var withNewIdentifier = await _invoicesRepository.GetByIdentifier(updateInvoiceRequest.Identifier);
+            var withNewIdentifier = await _invoicesRepository.GetByIdentifier(request.Identifier);
 
             if (withNewIdentifier != null && withNewIdentifier.InvoiceId != invoice.InvoiceId)
             {
                 return null;
             }
 
-            invoice.UpdatedBy = updateInvoiceRequest.User.GetIdentity();
-            invoice.Identifier = updateInvoiceRequest.Identifier;
-            invoice.Amount = updateInvoiceRequest.Amount;
+            invoice.UpdatedBy = request.User.GetIdentity();
+            invoice.Identifier = request.Identifier;
+            invoice.Amount = request.Amount;
 
             await _invoicesRepository.Update();
             return invoice;

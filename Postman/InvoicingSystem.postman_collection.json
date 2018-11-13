@@ -57,7 +57,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"identifier\" : \"INV-101\",\n\t\"amount\" : 120.50,\n\t\"invoiceId\" : 1\n}"
+					"raw": "{\n\t\"identifier\" : \"INV-101\",\n\t\"amount\" : 1230.50,\n\t\"invoiceId\" : 1\n}"
 				},
 				"url": {
 					"raw": "{{host}}/invoices",
@@ -140,6 +140,72 @@
 					"path": [
 						"invoices",
 						"1",
+						"notes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Note",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Api-Key",
+						"type": "text",
+						"value": "user123"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"invoiceId\" : 1,\n\t\"text\" : \"text\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}/notes",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"notes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Note",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-Api-Key",
+						"type": "text",
+						"value": "admin123"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"noteId\" : 1,\n\t\"text\" : \"text2\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}/notes",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
 						"notes"
 					]
 				}
