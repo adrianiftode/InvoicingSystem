@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Net;
+using Api.Authentication;
 using Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Database;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Api
 {
@@ -24,19 +26,24 @@ namespace Api
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {        
+        {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = UserApiKeyDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = UserApiKeyDefaults.AuthenticationScheme;
+            }).AddScheme<AuthenticationSchemeOptions, CustomAuthenticationHandler>(UserApiKeyDefaults.AuthenticationScheme, _ => { });
+            ;
             services
                 .AddRepositories(Configuration)
                 .AddCoreServices()
-                //.AddAuthenticationCore(options => { options.DefaultChallengeScheme = "Test"; })
-                .AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //app.UseAuthentication();
-
+            app.UseAuthentication(); // use the authentication middleware 
 
             if (!env.IsDevelopment())
             {
