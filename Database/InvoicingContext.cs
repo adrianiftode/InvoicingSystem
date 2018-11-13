@@ -1,8 +1,7 @@
-﻿using Database.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using Core;
 
 namespace Database
 {
@@ -12,7 +11,8 @@ namespace Database
         {
         }
 
-        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<Core.Invoice> Invoices { get; set; }
+        public DbSet<Core.Note> Notes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,17 +22,11 @@ namespace Database
 
         private static void Seed(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasData(
-                new User { Identity = "1", UserId = 1 },
-                new User { Identity = "2", UserId = 2 },
-                new User { Identity = "3", UserId = 3 },
-                new User { Identity = "4", UserId = 4 }
-            );
             modelBuilder.Entity<Note>().HasData(new Note
             {
                 NoteId = 1,
                 Text = "Invoice should be paid soon!",
-                UpdatedByUserId = 1,
+                UpdatedBy = "1",
                 InvoiceId = 1
             });
             modelBuilder.Entity<Invoice>().HasData(
@@ -41,14 +35,14 @@ namespace Database
                     InvoiceId = 1,
                     Amount = 150.05m,
                     Identifier = "INV-001",
-                    UpdatedByUserId = 1
+                    UpdatedBy = "1"
                 },
                 new Invoice
                 {
                     InvoiceId = 2,
                     Amount = 150.05m,
                     Identifier = "INV-002",
-                    UpdatedByUserId = 2
+                    UpdatedBy = "1"
                 }
             );
 

@@ -34,7 +34,7 @@ namespace Api.Controllers
         [HttpGet("{id}/notes")]
         public async Task<ActionResult<IReadOnlyCollection<Note>>> GetNotes(int id)
         {
-            var notes = await _invoicesService.GetNotes(id);
+            var notes = await _invoicesService.GetNotesBy(id);
 
             if (notes == null)
             {

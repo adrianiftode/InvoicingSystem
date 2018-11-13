@@ -6,6 +6,6 @@ namespace Core.Repositories
     public interface IInvoicesRepository
     {
         Task<Invoice> Get(int id);
-        Task<IReadOnlyCollection<Note>> GetNotes(int id);
+        Task<IReadOnlyCollection<Note>> GetNotesBy(int invoiceId);
     }
 }

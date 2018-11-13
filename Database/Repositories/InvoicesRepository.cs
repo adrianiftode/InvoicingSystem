@@ -18,38 +18,19 @@ namespace Database.Repositories
         public async Task<Core.Invoice> Get(int id)
         {
             var entity = await _context.Invoices
-                .Include(c=>c.UpdatedBy)
                 .Include(c => c.Notes)
                 .FirstOrDefaultAsync(c => c.InvoiceId == id);
 
-            if (entity == null)
-            {
-                return null;
-            }
-
-            return new Core.Invoice
-            {
-                Identifier = entity.Identifier,
-                Amount = entity.Amount,
-                InvoiceId = entity.InvoiceId,
-                Notes = entity.Notes.Select(c => c.Text).ToList(),
-                UpdatedBy = entity.UpdatedBy.Identity
-            };
+            return entity;
         }
 
-        public async Task<IReadOnlyCollection<Core.Note>> GetNotes(int id)
+        public async Task<IReadOnlyCollection<Core.Note>> GetNotesBy(int invoiceId)
         {
             var entity = await _context.Invoices
-                .Include(c => c.UpdatedBy)
                 .Include(c => c.Notes)
-                    .ThenInclude( n => n.UpdatedBy)
-                .FirstOrDefaultAsync(c => c.InvoiceId == id);
+                .FirstOrDefaultAsync(c => c.InvoiceId == invoiceId);
 
-            return entity?.Notes.Select(c => new Core.Note
-            {
-                Text = c.Text,
-                UpdatedBy = c.UpdatedBy.Identity
-            }).ToList();
+            return entity?.Notes.ToList();
         }
     }
 }

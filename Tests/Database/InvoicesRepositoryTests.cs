@@ -1,5 +1,4 @@
 ﻿using Database;
-using Database.Entities;
 using Database.Repositories;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +36,7 @@ namespace Tests.Database
                 var sut = new InvoicesRepository(context);
 
                 //Act
-                var notes = await sut.GetNotes(100);
+                var notes = await sut.GetNotesBy(100);
 
                 //Assert
                 notes.Should().BeNull();
@@ -53,7 +52,7 @@ namespace Tests.Database
                 var sut = new InvoicesRepository(context);
 
                 //Act
-                var notes = await sut.GetNotes(2);
+                var notes = await sut.GetNotesBy(2);
 
                 //Assert
                 notes.Should().NotBeNull();
@@ -71,7 +70,7 @@ namespace Tests.Database
                 var sut = new InvoicesRepository(context);
 
                 //Act
-                var notes = await sut.GetNotes(invoiceId);
+                var notes = await sut.GetNotesBy(invoiceId);
 
                 //Assert
                 notes.Should().NotBeNullOrEmpty();

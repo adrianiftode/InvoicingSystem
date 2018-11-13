@@ -1,4 +1,4 @@
-﻿using Database.Entities;
+﻿using Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,7 +9,8 @@ namespace Database.Configurations
     {
         public void Configure(EntityTypeBuilder<Note> builder)
         {
-            builder.Property(c => c.Text).HasMaxLength(1000);
+            builder.Property(c => c.UpdatedBy).IsRequired();
+            builder.Property(c => c.Text).IsRequired().HasMaxLength(1000);
         }
     }
 }
