@@ -127,8 +127,6 @@ namespace Tests.Functional
 
             //Assert
             response.StatusCode.Should().Be(HttpStatusCode.Created);
-            var content = await response.Content.ReadAsAsync<dynamic>();
-            ((string)content.updatedBy).Should().Be("1");
         }
     }
 }

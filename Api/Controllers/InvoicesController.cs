@@ -21,7 +21,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Invoice>> Get(int id)
+        public async Task<ActionResult<InvoiceModel>> Get(int id)
         {
             var invoice = await _invoicesService.Get(id);
 
@@ -30,11 +30,11 @@ namespace Api.Controllers
                 return NotFound();
             }
 
-            return invoice;
+            return invoice.Map();
         }
 
         [HttpGet("{id}/notes")]
-        public async Task<ActionResult<IReadOnlyCollection<Note>>> GetNotes(int id)
+        public async Task<ActionResult<IReadOnlyCollection<NoteModel>>> GetNotes(int id)
         {
             var notes = await _invoicesService.GetNotesBy(id);
 
@@ -43,12 +43,12 @@ namespace Api.Controllers
                 return NotFound();
             }
 
-            return Ok(notes);
+            return Ok(notes.Map());
         }
 
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(Invoice))]
-        public async Task<ActionResult<Invoice>> Create([FromBody]CreateInvoiceRequestModel request)
+        public async Task<ActionResult<InvoiceModel>> Create([FromBody]CreateInvoiceRequestModel request)
         {
             var invoice = await _invoicesService.Create(new CreateInvoiceRequest
             {
@@ -62,12 +62,12 @@ namespace Api.Controllers
                 return BadRequest(new { error = "Invoice could not be created." });
             }
 
-            return CreatedAtAction(nameof(Get), new { id = invoice.InvoiceId }, invoice);
+            return CreatedAtAction(nameof(Get), new { id = invoice.InvoiceId }, invoice.Map());
         }
 
         [HttpPut]
-        [ProducesResponseType(201, Type = typeof(Invoice))]
-        public async Task<ActionResult<Invoice>> Update([FromBody]UpdateInvoiceRequestModel request)
+        [ProducesResponseType(201, Type = typeof(InvoiceModel))]
+        public async Task<ActionResult<InvoiceModel>> Update([FromBody]UpdateInvoiceRequestModel request)
         {
             var invoice = await _invoicesService.Update(new UpdateInvoiceRequest
             {
@@ -82,7 +82,7 @@ namespace Api.Controllers
                 return BadRequest(new { error = "Invoice could not be updated." });
             }
 
-            return invoice;
+            return invoice.Map();
         }
     }
 }

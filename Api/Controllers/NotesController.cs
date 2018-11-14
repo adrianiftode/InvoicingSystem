@@ -20,7 +20,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Note>> Get(int id)
+        public async Task<ActionResult<NoteModel>> Get(int id)
         {
             var note = await _notesService.Get(id);
 
@@ -29,32 +29,32 @@ namespace Api.Controllers
                 return NotFound();
             }
 
-            return note;
+            return note.Map();
         }
 
         [HttpPost]
-        [ProducesResponseType(201, Type = typeof(Note))]
+        [ProducesResponseType(201, Type = typeof(NoteModel))]
         public async Task<ActionResult<Note>> Create([FromBody]CreateNoteRequestModel request)
         {
-            var invoice = await _notesService.Create(new CreateNoteRequest
+            var note = await _notesService.Create(new CreateNoteRequest
             {
                 InvoiceId = request.InvoiceId,
                 Text = request.Text,
                 User = User
             });
 
-            if (invoice == null)
+            if (note == null)
             {
                 return BadRequest(new { error = "Note could not be created." });
             }
 
-            return CreatedAtAction(nameof(Get), new { id = invoice.NoteId }, invoice);
+            return CreatedAtAction(nameof(Get), new { id = note.NoteId }, note.Map());
         }
 
 
         [HttpPut]
-        [ProducesResponseType(201, Type = typeof(Note))]
-        public async Task<ActionResult<Note>> Update([FromBody]UpdateNoteRequestModel request)
+        [ProducesResponseType(201, Type = typeof(NoteModel))]
+        public async Task<ActionResult<NoteModel>> Update([FromBody]UpdateNoteRequestModel request)
         {
             var note = await _notesService.Update(new UpdateNoteRequest
             {
@@ -68,7 +68,7 @@ namespace Api.Controllers
                 return BadRequest(new { error = "Note could not be updated." });
             }
 
-            return note;
+            return note.Map();
         }
     }
 }

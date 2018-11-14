@@ -11,4 +11,3 @@ To do
 - Repetitive code can be refactored (common Request class)
 - better error handling as currently there is no way to tell why some action can't be completed
 - the Update/Save methods can be extracted into a UoW
-- instead of responding with Core.Models we could use some ViewModels
