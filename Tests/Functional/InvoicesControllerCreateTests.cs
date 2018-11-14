@@ -27,11 +27,11 @@ namespace Tests.Functional
                     var invoicesServiceMock = new Mock<IInvoicesService>();
                     invoicesServiceMock
                         .Setup(m => m.Create(It.IsAny<CreateInvoiceRequest>()))
-                        .ReturnsAsync(new Invoice
+                        .ReturnsAsync(Result<Invoice>.Success(new Invoice
                         {
                             Identifier = "INV-001",
                             Amount = 150.05m
-                        });
+                        }));
                     c.ConfigureTestServices(srv =>
                     {
                         srv.AddTransient(_ => invoicesServiceMock.Object);

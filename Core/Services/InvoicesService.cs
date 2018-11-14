@@ -24,16 +24,16 @@ namespace Core.Services
             return notes;
         }
 
-        public async Task<Invoice> Create(CreateInvoiceRequest request)
+        public async Task<Result<Invoice>> Create(CreateInvoiceRequest request)
         {
             if (await _invoicesRepository.GetByIdentifier(request.Identifier) != null)
             {
-                return null;
+                return Result<Invoice>.Error("The invoice cannot be created because another invoice with the same already exists.");
             }
 
             if (request.User.IsUser())
             {
-                return null;
+                return Result<Invoice>.Forbidden;
             }
 
             var invoice = new Invoice
@@ -45,28 +45,28 @@ namespace Core.Services
 
             await _invoicesRepository.Create(invoice);
 
-            return invoice;
+            return Result<Invoice>.Success(invoice);
         }
 
-        public async Task<Invoice> Update(UpdateInvoiceRequest request)
+        public async Task<Result<Invoice>> Update(UpdateInvoiceRequest request)
         {
             var invoice = await _invoicesRepository.Get(request.InvoiceId);
 
             if (invoice == null)
             {
-                return null;
+                return Result<Invoice>.NotPresent;
             }
 
             if (invoice.UpdatedBy != request.User.GetIdentity())
             {
-                return null;
+                return Result<Invoice>.Forbidden;
             }
 
             var withNewIdentifier = await _invoicesRepository.GetByIdentifier(request.Identifier);
 
             if (withNewIdentifier != null && withNewIdentifier.InvoiceId != invoice.InvoiceId)
             {
-                return null;
+                return Result<Invoice>.Error("The invoice cannot be updated because another invoice with the new identifier already exists.");
             }
 
             invoice.UpdatedBy = request.User.GetIdentity();
@@ -74,7 +74,7 @@ namespace Core.Services
             invoice.Amount = request.Amount;
 
             await _invoicesRepository.Update();
-            return invoice;
+            return Result<Invoice>.Success(invoice);
         }
     }
 }

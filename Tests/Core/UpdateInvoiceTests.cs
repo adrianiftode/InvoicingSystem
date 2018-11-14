@@ -46,9 +46,11 @@ namespace Tests.Core
             };
 
             //Act
-            var invoice = await _sut.Update(request);
+            var result = await _sut.Update(request);
 
             //Assert
+            var invoice = result.Item;
+            result.ShouldBeSuccess();
             invoice.UpdatedBy.Should().Be("1");
             invoice.Amount.Should().Be(request.Amount);
             invoice.Identifier.Should().Be(request.Identifier);
@@ -86,10 +88,11 @@ namespace Tests.Core
             };
 
             //Act
-            var invoice = await _sut.Update(request);
+            var result = await _sut.Update(request);
 
             //Assert
-            invoice.Should().BeNull();
+            result.ShouldFail();
+            result.Item.Should().BeNull();
             _repository.Verify(c => c.Update(), Times.Never);
         }
 
@@ -104,10 +107,11 @@ namespace Tests.Core
             };
 
             //Act
-            var invoice = await _sut.Update(request);
+            var result = await _sut.Update(request);
 
             //Assert
-            invoice.Should().BeNull();
+            result.ShouldFail();
+            result.Item.Should().BeNull();
             _repository.Verify(c => c.Update(), Times.Never);
         }
 
@@ -123,10 +127,11 @@ namespace Tests.Core
             };
 
             //Act
-            var invoice = await _sut.Update(request);
+            var result = await _sut.Update(request);
 
             //Assert
-            invoice.Should().BeNull();
+            result.ShouldFail();
+            result.Item.Should().BeNull();
             _repository.Verify(c => c.Update(), Times.Never);
         }
     }

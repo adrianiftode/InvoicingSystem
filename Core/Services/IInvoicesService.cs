@@ -7,7 +7,7 @@ namespace Core.Services
     {
         Task<Invoice> Get(int id);
         Task<IReadOnlyCollection<Note>> GetNotesBy(int invoiceId);
-        Task<Invoice> Update(UpdateInvoiceRequest request);
-        Task<Invoice> Create(CreateInvoiceRequest request);
+        Task<Result<Invoice>> Update(UpdateInvoiceRequest request);
+        Task<Result<Invoice>> Create(CreateInvoiceRequest request);
     }
 }

@@ -31,9 +31,11 @@ namespace Tests.Core
             };
 
             //Act
-            var invoice = await _sut.Create(request);
+            var result = await _sut.Create(request);
 
             //Assert
+            var invoice = result.Item;
+            result.ShouldBeSuccess();
             invoice.UpdatedBy.Should().Be("1");
             invoice.Amount.Should().Be(request.Amount);
             invoice.Identifier.Should().Be(request.Identifier);
@@ -69,10 +71,11 @@ namespace Tests.Core
             };
 
             //Act
-            var invoice = await _sut.Create(request);
+            var result = await _sut.Create(request);
 
             //Assert
-            invoice.Should().NotBeNull();
+            result.ShouldBeSuccess();
+            result.Item.Should().NotBeNull();
         }
 
         [Fact]
@@ -90,11 +93,12 @@ namespace Tests.Core
             };
 
             //Act
-            var invoice = await _sut.Create(request);
+            var result = await _sut.Create(request);
 
             //Assert
             _repository.Verify(c => c.Create(It.IsAny<Invoice>()), Times.Never);
-            invoice.Should().BeNull();
+            result.ShouldFail();
+            result.Errors.Should().Contain("The invoice cannot be created because another invoice with the same already exists.");
         }
     }
 }

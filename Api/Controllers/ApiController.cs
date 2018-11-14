@@ -50,14 +50,22 @@ namespace Api.Controllers
             {
                 return BadRequest(new
                 {
-                    error =
-                        messageWhenNotPresent ?? "Entry could not be modified because is not present."
+                    value = new[] {
+                        messageWhenNotPresent ?? "Entry could not be modified because is not present."}
                 });
             }
 
             if (result.Status == ResultStatus.Forbidden)
             {
                 return Forbid();
+            }
+
+            if (result.Status == ResultStatus.InvalidOperation)
+            {
+                return BadRequest(new
+                {
+                    value = result.Errors
+                });
             }
 
             return null;

@@ -29,10 +29,10 @@ namespace Tests.Core
             };
 
             //Act
-            var invoice = await _sut.Create(request);
+            var result = await _sut.Create(request);
 
             //Assert
-            invoice.Should().BeNull();
+            result.ShouldFail();
         }
     }
 }

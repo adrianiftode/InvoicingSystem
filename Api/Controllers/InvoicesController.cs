@@ -1,7 +1,5 @@
 ﻿using Api.Models;
-using Core;
 using Core.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -35,29 +33,27 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(201, Type = typeof(Invoice))]
+        [ProducesResponseType(201, Type = typeof(InvoiceModel))]
         public async Task<ActionResult<InvoiceModel>> Create([FromBody]CreateInvoiceRequestModel request)
         {
-            var invoice = await _invoicesService.Create(new CreateInvoiceRequest
+            var result = await _invoicesService.Create(new CreateInvoiceRequest
             {
                 Amount = request.Amount,
                 Identifier = request.Identifier,
                 User = User
             });
 
-            if (invoice == null)
+            return CreatedResult(result, InvoiceMapper.Map, nameof(Get), new
             {
-                return BadRequest(new { error = "Invoice could not be created." });
-            }
-
-            return CreatedAtAction(nameof(Get), new { id = invoice.InvoiceId }, invoice.Map());
+                id = result.Item.InvoiceId
+            });
         }
 
         [HttpPut]
         [ProducesResponseType(201, Type = typeof(InvoiceModel))]
         public async Task<ActionResult<InvoiceModel>> Update([FromBody]UpdateInvoiceRequestModel request)
         {
-            var invoice = await _invoicesService.Update(new UpdateInvoiceRequest
+            var result = await _invoicesService.Update(new UpdateInvoiceRequest
             {
                 InvoiceId = request.InvoiceId,
                 Amount = request.Amount,
@@ -65,12 +61,7 @@ namespace Api.Controllers
                 User = User
             });
 
-            if (invoice == null)
-            {
-                return BadRequest(new { error = "Invoice could not be updated." });
-            }
-
-            return invoice.Map();
+            return Result(result, InvoiceMapper.Map);
         }
     }
 }
