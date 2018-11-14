@@ -26,14 +26,14 @@ namespace Core.Services
 
         public async Task<Result<Invoice>> Create(CreateInvoiceRequest request)
         {
-            if (await _invoicesRepository.GetByIdentifier(request.Identifier) != null)
-            {
-                return Result.Error("The invoice cannot be created because another invoice with the same already exists.");
-            }
-
-            if (request.User.IsUser())
+            if (!request.User.IsAdmin())
             {
                 return Result.Forbidden;
+            }
+
+            if (await _invoicesRepository.GetByIdentifier(request.Identifier) != null)
+            {
+                return Result.Error("The invoice cannot be created because another invoice with the same Identifier already exists.");
             }
 
             var invoice = new Invoice
