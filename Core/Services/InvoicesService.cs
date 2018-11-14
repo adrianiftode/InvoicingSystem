@@ -28,12 +28,12 @@ namespace Core.Services
         {
             if (await _invoicesRepository.GetByIdentifier(request.Identifier) != null)
             {
-                return Result<Invoice>.Error("The invoice cannot be created because another invoice with the same already exists.");
+                return Result.Error("The invoice cannot be created because another invoice with the same already exists.");
             }
 
             if (request.User.IsUser())
             {
-                return Result<Invoice>.Forbidden;
+                return Result.Forbidden;
             }
 
             var invoice = new Invoice
@@ -45,7 +45,7 @@ namespace Core.Services
 
             await _invoicesRepository.Create(invoice);
 
-            return Result<Invoice>.Success(invoice);
+            return invoice;
         }
 
         public async Task<Result<Invoice>> Update(UpdateInvoiceRequest request)
@@ -54,19 +54,19 @@ namespace Core.Services
 
             if (invoice == null)
             {
-                return Result<Invoice>.NotPresent;
+                return Result.NotPresent;
             }
 
             if (invoice.UpdatedBy != request.User.GetIdentity())
             {
-                return Result<Invoice>.Forbidden;
+                return Result.Forbidden;
             }
 
             var withNewIdentifier = await _invoicesRepository.GetByIdentifier(request.Identifier);
 
             if (withNewIdentifier != null && withNewIdentifier.InvoiceId != invoice.InvoiceId)
             {
-                return Result<Invoice>.Error("The invoice cannot be updated because another invoice with the new identifier already exists.");
+                return Result.Error("The invoice cannot be updated because another invoice with the new identifier already exists.");
             }
 
             invoice.UpdatedBy = request.User.GetIdentity();
@@ -74,7 +74,7 @@ namespace Core.Services
             invoice.Amount = request.Amount;
 
             await _invoicesRepository.Update();
-            return Result<Invoice>.Success(invoice);
+            return invoice;
         }
     }
 }

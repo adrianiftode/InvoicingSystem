@@ -25,13 +25,13 @@ namespace Core.Services
 
             if (invoice == null)
             {
-                return Result<Note>.Error("Note could not be created because the targeted invoice is not present.");
+                return Result.Error("Note could not be created because the targeted invoice is not present.");
             }
 
             var note = invoice.AddNote(request.Text, request.User.GetIdentity());
 
             await _notesRepository.Create(note);
-            return Result<Note>.Success(note);
+            return note;
         }
 
         public async Task<Result<Note>> Update(UpdateNoteRequest request)
@@ -40,19 +40,19 @@ namespace Core.Services
 
             if (note == null)
             {
-                return Result<Note>.NotPresent;
+                return Result.NotPresent;
             }
 
             if (note.UpdatedBy != request.User.GetIdentity())
             {
-                return Result<Note>.Forbidden;
+                return Result.Forbidden;
             }
 
             note.UpdatedBy = request.User.GetIdentity();
             note.Text = request.Text;
 
             await _notesRepository.Update();
-            return Result<Note>.Success(note);
+            return note;
         }
     }
 }
