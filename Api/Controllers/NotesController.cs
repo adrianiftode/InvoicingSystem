@@ -19,7 +19,7 @@ namespace Api.Controllers
         {
             var note = await _notesService.Get(id);
 
-            return Ok(note, NoteMapper.Map);
+            return OkOrNotFound(note.Map());
         }
 
         [HttpPost]

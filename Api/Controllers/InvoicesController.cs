@@ -8,10 +8,7 @@ using System.Threading.Tasks;
 
 namespace Api.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
-    [Authorize]
-    public class InvoicesController : ControllerBase
+    public class InvoicesController : ApiController
     {
         private readonly IInvoicesService _invoicesService;
 
@@ -25,25 +22,16 @@ namespace Api.Controllers
         {
             var invoice = await _invoicesService.Get(id);
 
-            if (invoice == null)
-            {
-                return NotFound();
-            }
-
-            return invoice.Map();
+            return OkOrNotFound(invoice?.Map());
         }
 
         [HttpGet("{id}/notes")]
-        public async Task<ActionResult<IReadOnlyCollection<NoteModel>>> GetNotes(int id)
+        public async Task<ActionResult<IEnumerable<NoteModel>>> GetNotes(int id)
         {
             var notes = await _invoicesService.GetNotesBy(id);
 
-            if (notes == null)
-            {
-                return NotFound();
-            }
+            return OkOrNotFound(notes?.Map());
 
-            return Ok(notes.Map());
         }
 
         [HttpPost]

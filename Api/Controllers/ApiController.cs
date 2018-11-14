@@ -34,14 +34,14 @@ namespace Api.Controllers
             return CreatedAtAction(actionName, routeValues, map(result.Item));
         }
 
-        protected ActionResult<TModel> Ok<TItem, TModel>(TItem item, Func<TItem, TModel> map)
+        protected ActionResult<TResponse> OkOrNotFound<TResponse>(TResponse response)
         {
-            if (item == null)
+            if (response == null)
             {
                 return NotFound();
             }
 
-            return map(item);
+            return response;
         }
 
         private ActionResult Fail<TItem>(Result<TItem> result, string messageWhenNotPresent)
