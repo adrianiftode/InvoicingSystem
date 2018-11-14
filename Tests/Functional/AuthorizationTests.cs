@@ -8,11 +8,11 @@ using Xunit;
 
 namespace Tests.Functional
 {
-    public class MeTests : IClassFixture<WebApplicationFactory<Startup>>
+    public class AuthorizationTests : IClassFixture<WebApplicationFactory<Startup>>
     {
         private readonly WebApplicationFactory<Startup> _factory;
 
-        public MeTests(WebApplicationFactory<Startup> factory)
+        public AuthorizationTests(WebApplicationFactory<Startup> factory)
         {
             _factory = factory;
         }
@@ -24,7 +24,7 @@ namespace Tests.Functional
             var client = _factory.CreateClient();
 
             //Act
-            var response = await client.GetAsync("/me");
+            var response = await client.GetAsync("/invoices/1");
 
             //Assert
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -38,7 +38,7 @@ namespace Tests.Functional
             client.DefaultRequestHeaders.Add("X-Api-Key", "user123");
             
             //Act
-            var response = await client.GetAsync("/me");
+            var response = await client.GetAsync("/invoices/1");
 
             //Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -55,7 +55,7 @@ namespace Tests.Functional
             client.DefaultRequestHeaders.Add("X-Api-Key", "no-valid-user-key");
 
             //Act
-            var response = await client.GetAsync("/me");
+            var response = await client.GetAsync("/invoices/1");
 
             //Assert
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
