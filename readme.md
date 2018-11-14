@@ -8,6 +8,4 @@ Some connection strings are hardcoded. These are used either at the dev time (De
 
 To do
 - Cover notes by tests
-- Repetitive code can be refactored (common Request class)
-- better error handling as currently there is no way to tell why some action can't be completed
 - the Update/Save methods can be extracted into a UoW
