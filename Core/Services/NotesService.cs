@@ -19,40 +19,40 @@ namespace Core.Services
             return note;
         }
 
-        public async Task<Note> Create(CreateNoteRequest request)
+        public async Task<Result<Note>> Create(CreateNoteRequest request)
         {
             var invoice = await _invoicesRepository.Get(request.InvoiceId);
 
             if (invoice == null)
             {
-                return null;
+                return Result<Note>.NotPresent;
             }
 
             var note = invoice.AddNote(request.Text, request.User.GetIdentity());
 
             await _notesRepository.Create(note);
-            return note;
+            return Result<Note>.Success(note);
         }
 
-        public async Task<Note> Update(UpdateNoteRequest request)
+        public async Task<Result<Note>> Update(UpdateNoteRequest request)
         {
             var note = await _notesRepository.Get(request.NoteId);
 
             if (note == null)
             {
-                return null;
+                return Result<Note>.NotPresent;
             }
 
             if (note.UpdatedBy != request.User.GetIdentity())
             {
-                return null;
+                return Result<Note>.Forbidden;
             }
 
             note.UpdatedBy = request.User.GetIdentity();
             note.Text = request.Text;
 
             await _notesRepository.Update();
-            return note;
+            return Result<Note>.Success(note);
         }
     }
 }

@@ -1,16 +1,11 @@
 ﻿using Api.Models;
-using Core;
 using Core.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace Api.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
-    [Authorize]
-    public class NotesController : ControllerBase
+    public class NotesController : ApiController
     {
         private readonly INotesService _notesService;
 
@@ -24,31 +19,25 @@ namespace Api.Controllers
         {
             var note = await _notesService.Get(id);
 
-            if (note == null)
-            {
-                return NotFound();
-            }
-
-            return note.Map();
+            return Ok(note, NoteMapper.Map);
         }
 
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(NoteModel))]
-        public async Task<ActionResult<Note>> Create([FromBody]CreateNoteRequestModel request)
+        public async Task<ActionResult<NoteModel>> Create([FromBody]CreateNoteRequestModel request)
         {
-            var note = await _notesService.Create(new CreateNoteRequest
+            var result = await _notesService.Create(new CreateNoteRequest
             {
                 InvoiceId = request.InvoiceId,
                 Text = request.Text,
                 User = User
             });
 
-            if (note == null)
+            return CreatedResult(result, NoteMapper.Map, nameof(Get), new
             {
-                return BadRequest(new { error = "Note could not be created." });
-            }
+                id = result.Item.NoteId
+            }, "Note could not be created because the targeted invoice is not present.");
 
-            return CreatedAtAction(nameof(Get), new { id = note.NoteId }, note.Map());
         }
 
 
@@ -56,19 +45,14 @@ namespace Api.Controllers
         [ProducesResponseType(201, Type = typeof(NoteModel))]
         public async Task<ActionResult<NoteModel>> Update([FromBody]UpdateNoteRequestModel request)
         {
-            var note = await _notesService.Update(new UpdateNoteRequest
+            var result = await _notesService.Update(new UpdateNoteRequest
             {
                 NoteId = request.NoteId,
                 Text = request.Text,
                 User = User
             });
 
-            if (note == null)
-            {
-                return BadRequest(new { error = "Note could not be updated." });
-            }
-
-            return note.Map();
+            return Result(result, NoteMapper.Map);
         }
     }
 }
