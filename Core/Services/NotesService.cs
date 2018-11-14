@@ -25,7 +25,7 @@ namespace Core.Services
 
             if (invoice == null)
             {
-                return Result<Note>.NotPresent;
+                return Result<Note>.Error("Note could not be created because the targeted invoice is not present.");
             }
 
             var note = invoice.AddNote(request.Text, request.User.GetIdentity());

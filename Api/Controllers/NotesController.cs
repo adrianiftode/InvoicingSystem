@@ -36,7 +36,7 @@ namespace Api.Controllers
             return CreatedResult(result, NoteMapper.Map, nameof(Get), new
             {
                 id = result.Item.NoteId
-            }, "Note could not be created because the targeted invoice is not present.");
+            });
 
         }
 
