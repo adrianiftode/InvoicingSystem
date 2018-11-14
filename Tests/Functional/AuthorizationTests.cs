@@ -42,9 +42,6 @@ namespace Tests.Functional
 
             //Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            dynamic claims = await response.Content.ReadAsAsync<dynamic>();
-            var identity = (string)claims.ToObject<dynamic[]>()[0].value;
-            identity.Should().Be("3");
         }
 
         [Fact]
