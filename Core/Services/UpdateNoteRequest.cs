@@ -1,11 +1,8 @@
-﻿using System.Security.Claims;
-
-namespace Core.Services
+﻿namespace Core.Services
 {
-    public class UpdateNoteRequest
+    public class UpdateNoteRequest : Request
     {
         public int NoteId { get; set; }
         public string Text { get; set; }
-        public ClaimsPrincipal User { get; set; }
     }
 }

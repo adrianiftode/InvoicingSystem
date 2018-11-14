@@ -1,11 +1,8 @@
-﻿using System.Security.Claims;
-
-namespace Core.Services
+﻿namespace Core.Services
 {
-    public class CreateInvoiceRequest
+    public class CreateInvoiceRequest : Request
     {
         public string Identifier { get; set; }
         public decimal Amount { get; set; }
-        public ClaimsPrincipal User { get; set; }
     }
 }

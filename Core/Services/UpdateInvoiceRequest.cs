@@ -1,12 +1,9 @@
-﻿using System.Security.Claims;
-
-namespace Core.Services
+﻿namespace Core.Services
 {
-    public class UpdateInvoiceRequest
+    public class UpdateInvoiceRequest : Request
     {
         public int InvoiceId { get; set; }
         public string Identifier { get; set; }
         public decimal Amount { get; set; }
-        public ClaimsPrincipal User { get; set; }
     }
 }
