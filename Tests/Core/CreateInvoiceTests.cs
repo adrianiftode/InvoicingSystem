@@ -27,7 +27,7 @@ namespace Tests.Core
             {
                 Identifier = "INV-001",
                 Amount = 150.05m,
-                User = TestsHelpers.CreateUser("1", "Admin")
+                User = TestsHelpers.CreateUser("1", Roles.Admin)
             };
 
             //Act
@@ -49,7 +49,7 @@ namespace Tests.Core
             {
                 Identifier = "INV-001",
                 Amount = 150.05m,
-                User = TestsHelpers.CreateUser("1", "Admin")
+                User = TestsHelpers.CreateUser("1", Roles.Admin)
             };
 
             //Act
@@ -67,7 +67,7 @@ namespace Tests.Core
             {
                 Identifier = "INV-001",
                 Amount = 150.05m,
-                User = TestsHelpers.CreateUser("1", "Admin")
+                User = TestsHelpers.CreateUser("1", Roles.Admin)
             };
 
             //Act
@@ -89,7 +89,7 @@ namespace Tests.Core
             {
                 Identifier = "INV-001",
                 Amount = 150.05m,
-                User = TestsHelpers.CreateUser("1", "Admin")
+                User = TestsHelpers.CreateUser("1", Roles.Admin)
             };
 
             //Act
@@ -98,7 +98,7 @@ namespace Tests.Core
             //Assert
             _repository.Verify(c => c.Create(It.IsAny<Invoice>()), Times.Never);
             result.ShouldFail();
-            result.Errors.Should().Contain("The invoice cannot be created because another invoice with the same already exists.");
+            result.Errors.Should().Contain("The invoice cannot be created because another invoice with the same Identifier already exists.");
         }
     }
 }
