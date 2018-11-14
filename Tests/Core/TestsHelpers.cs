@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using System.Security.Principal;
-using Core.Services;
+using Core;
 using FluentAssertions;
 
 namespace Tests.Core

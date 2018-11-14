@@ -1,6 +1,5 @@
 ﻿using Core;
 using Core.Repositories;
-using Core.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +7,7 @@ using Moq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+
 using Tests.Fixtures;
 using Xunit;
 

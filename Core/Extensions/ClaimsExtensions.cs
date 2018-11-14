@@ -2,7 +2,7 @@
 
 namespace Core
 {
-    public static class ClaimsExtensions
+    internal static class ClaimsExtensions
     {
         public static bool IsAdmin(this ClaimsPrincipal claimsPrincipal)
             => claimsPrincipal?.IsInRole(Roles.Admin) ?? false;

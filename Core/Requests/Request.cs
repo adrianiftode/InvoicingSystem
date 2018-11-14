@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Core.Services
+namespace Core
 {
     public class Request
     {

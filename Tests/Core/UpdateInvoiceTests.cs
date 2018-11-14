@@ -1,9 +1,9 @@
 ﻿using Core;
 using Core.Repositories;
-using Core.Services;
 using FluentAssertions;
 using Moq;
 using System.Threading.Tasks;
+
 using Xunit;
 
 namespace Tests.Core

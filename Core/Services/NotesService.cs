@@ -1,7 +1,8 @@
 ﻿using Core.Repositories;
 using System.Threading.Tasks;
 
-namespace Core.Services
+
+namespace Core
 {
     public class NotesService : INotesService
     {

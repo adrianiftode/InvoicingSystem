@@ -1,4 +1,4 @@
-﻿namespace Core.Services
+﻿namespace Core
 {
     public class UpdateNoteRequest : Request
     {

@@ -1,7 +1,7 @@
 ﻿
 using System.Collections.Generic;
 
-namespace Core.Services
+namespace Core
 {
     public sealed class Result
     {

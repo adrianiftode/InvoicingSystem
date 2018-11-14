@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Core.Services
+namespace Core
 {
     public class InvoicesService : IInvoicesService
     {
