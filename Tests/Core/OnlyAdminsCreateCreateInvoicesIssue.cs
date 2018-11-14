@@ -2,7 +2,6 @@
 using Core;
 using Core.Repositories;
 using Core.Services;
-using FluentAssertions;
 using Moq;
 using Xunit;
 
