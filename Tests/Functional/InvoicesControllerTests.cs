@@ -1,6 +1,8 @@
 ﻿using FluentAssertions;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Api.Models;
 using Tests.Fixtures;
 using Xunit;
 using Xunit.Abstractions;
@@ -53,6 +55,23 @@ namespace Tests.Functional
             var content = await response.Content.ReadAsStringAsync();
             _output.WriteLine(content);
             response.StatusCode.Should().Be(expectedStatusCode);
+        }
+
+        [Fact]
+        public async Task GetInvoiceResponse_WithValidId_ShouldReturnInvoiceModel()
+        {
+            //Arrange
+            var client = _factory.CreateClient().WithApiKey("admin123");
+
+            //Act
+            var response = await client.GetAsync("/invoices/1");
+
+            //Assert
+            var invoice = await response.Content.ReadAsAsync<InvoiceModel>();
+            invoice.Amount.Should().Be(150.05m);
+            invoice.Identifier.Should().Be("INV-001");
+            invoice.InvoiceId.Should().Be(1);
+            invoice.Notes.Should().NotBeNullOrEmpty();
         }
     }
 }
