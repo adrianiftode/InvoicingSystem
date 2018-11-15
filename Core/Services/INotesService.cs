@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 
-namespace Core.Services
+
+namespace Core
 {
     public interface INotesService
     {

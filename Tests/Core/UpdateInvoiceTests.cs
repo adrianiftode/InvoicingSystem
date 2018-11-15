@@ -1,9 +1,9 @@
 ﻿using Core;
 using Core.Repositories;
-using Core.Services;
 using FluentAssertions;
 using Moq;
 using System.Threading.Tasks;
+
 using Xunit;
 
 namespace Tests.Core
@@ -22,7 +22,7 @@ namespace Tests.Core
                     InvoiceId = 1,
                     Identifier = "INV-001",
                     Amount = 150.05m,
-                    UpdatedBy = TestsHelpers.CreateUser("1", "Admin").GetIdentity()
+                    UpdatedBy = TestsHelpers.CreateUser("1", Roles.Admin).GetIdentity()
                 });
             _repository.Setup(c => c.GetByIdentifier("INV-002"))
                 .ReturnsAsync(new Invoice
@@ -42,7 +42,7 @@ namespace Tests.Core
                 InvoiceId = 1,
                 Identifier = "INV-001-A",
                 Amount = 160.05m,
-                User = TestsHelpers.CreateUser("1", "Admin")
+                User = TestsHelpers.CreateUser("1", Roles.Admin)
             };
 
             //Act
@@ -65,7 +65,7 @@ namespace Tests.Core
                 InvoiceId = 1,
                 Identifier = "INV-001-A",
                 Amount = 160.05m,
-                User = TestsHelpers.CreateUser("1", "Admin")
+                User = TestsHelpers.CreateUser("1", Roles.Admin)
             };
 
             //Act
@@ -84,7 +84,7 @@ namespace Tests.Core
                 InvoiceId = 1,
                 Identifier = "INV-001-A",
                 Amount = 160.05m,
-                User = TestsHelpers.CreateUser("2", "Admin")
+                User = TestsHelpers.CreateUser("2", Roles.Admin)
             };
 
             //Act
@@ -103,7 +103,7 @@ namespace Tests.Core
             var request = new UpdateInvoiceRequest
             {
                 InvoiceId = 2,
-                User = TestsHelpers.CreateUser("2", "Admin")
+                User = TestsHelpers.CreateUser("2", Roles.Admin)
             };
 
             //Act
@@ -123,7 +123,7 @@ namespace Tests.Core
             {
                 InvoiceId = 1,
                 Identifier = "INV-002",
-                User = TestsHelpers.CreateUser("1", "Admin")
+                User = TestsHelpers.CreateUser("1", Roles.Admin)
             };
 
             //Act

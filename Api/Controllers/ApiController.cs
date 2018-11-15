@@ -1,8 +1,9 @@
-﻿using Core.Services;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
+using Core;
+
 
 namespace Api.Controllers
 {

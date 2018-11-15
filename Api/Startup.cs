@@ -27,7 +27,7 @@ namespace Api
                 options.DefaultAuthenticateScheme = UserApiKeyDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = UserApiKeyDefaults.AuthenticationScheme;
             }).AddScheme<AuthenticationSchemeOptions, CustomAuthenticationHandler>(UserApiKeyDefaults.AuthenticationScheme, _ => { });
-            ;
+
             services
                 .AddRepositories(Configuration)
                 .AddCoreServices()
@@ -48,8 +48,6 @@ namespace Api
 
             app.UseCustomJsonErrors();
             app.UseMvc();
-
-
             app.UseMigrations(Configuration);
         }
     }

@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Core;
 
 namespace Api.Authentication
 {
@@ -20,10 +21,10 @@ namespace Api.Authentication
         {
             _users = new Dictionary<string, ClaimsPrincipal>
             {
-                {"admin123", CreateFrom("1", "Admin")},
-                {"admin345", CreateFrom("2", "Admin")},
-                {"user123", CreateFrom("3", "User")},
-                {"user345", CreateFrom("4", "User")},
+                {"admin123", CreateFrom("1", Roles.Admin)},
+                {"admin345", CreateFrom("2", Roles.Admin)},
+                {"user123", CreateFrom("3", Roles.User)},
+                {"user345", CreateFrom("4", Roles.User)},
             };
         }
 

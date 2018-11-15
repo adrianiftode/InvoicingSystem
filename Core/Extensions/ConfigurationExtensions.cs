@@ -1,6 +1,5 @@
-﻿using Core.Services;
+﻿using Core;
 using Microsoft.Extensions.DependencyInjection;
-
 
 namespace Core
 {
