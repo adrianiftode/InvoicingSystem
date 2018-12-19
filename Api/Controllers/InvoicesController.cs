@@ -1,25 +1,26 @@
 ﻿using Api.Models;
+using Core;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Core;
 
 
 namespace Api.Controllers
 {
     public class InvoicesController : ApiController
     {
-        private readonly IInvoicesService _invoicesService;
+        private readonly IMediator _mediator;
 
-        public InvoicesController(IInvoicesService invoicesService)
+        public InvoicesController(IMediator mediator)
         {
-            _invoicesService = invoicesService;
+            _mediator = mediator;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<InvoiceModel>> Get(int id)
         {
-            var invoice = await _invoicesService.Get(id);
+            var invoice = await _mediator.Send(new InvoiceByIdQuery { Id = id });
 
             return OkOrNotFound(invoice?.Map());
         }
@@ -27,7 +28,7 @@ namespace Api.Controllers
         [HttpGet("{id}/notes")]
         public async Task<ActionResult<IEnumerable<NoteModel>>> GetNotes(int id)
         {
-            var notes = await _invoicesService.GetNotesBy(id);
+            var notes = await _mediator.Send(new InvoiceNotesQuery { InvoiceId = id });
 
             return OkOrNotFound(notes?.Map());
 
@@ -37,7 +38,7 @@ namespace Api.Controllers
         [ProducesResponseType(201, Type = typeof(InvoiceModel))]
         public async Task<ActionResult<InvoiceModel>> Create([FromBody]CreateInvoiceRequestModel request)
         {
-            var result = await _invoicesService.Create(new CreateInvoiceRequest
+            var result = await _mediator.Send(new CreateInvoiceRequest
             {
                 Amount = request.Amount,
                 Identifier = request.Identifier,
@@ -54,7 +55,7 @@ namespace Api.Controllers
         [ProducesResponseType(201, Type = typeof(InvoiceModel))]
         public async Task<ActionResult<InvoiceModel>> Update([FromBody]UpdateInvoiceRequestModel request)
         {
-            var result = await _invoicesService.Update(new UpdateInvoiceRequest
+            var result = await _mediator.Send(new UpdateInvoiceRequest
             {
                 InvoiceId = request.InvoiceId,
                 Amount = request.Amount,

@@ -6,8 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
-
+using MediatR;
 using Tests.Fixtures;
 using Xunit;
 
@@ -30,15 +31,15 @@ namespace Tests.Functional
             // Arrange
             var client = _factory.WithWebHostBuilder(c =>
                 {
-                    var invoicesServiceMock = new Mock<INotesService>();
-                    invoicesServiceMock
-                        .Setup(m => m.Create(It.IsAny<CreateNoteRequest>()))
+                    var mediatorMock = new Mock<IMediator>();
+                    mediatorMock
+                        .Setup(m => m.Send(It.IsAny<CreateNoteRequest>(), It.IsAny<CancellationToken>()))
                         .ReturnsAsync(new Note
                         {
                             NoteId = 2,
                             Text = "Text"
                         });
-                    c.ConfigureTestServices(srv => { srv.AddTransient(_ => invoicesServiceMock.Object); });
+                    c.ConfigureTestServices(srv => { srv.AddTransient(_ => mediatorMock.Object); });
                 })
                 .CreateClient("user123");
 
@@ -79,10 +80,11 @@ namespace Tests.Functional
             var client = _factory
                 .WithWebHostBuilder(c =>
                 {
-                    var service = new Mock<INotesService>();
-                    service.Setup(m => m.Create(It.IsAny<CreateNoteRequest>()))
-                        .ReturnsAsync(() => Result.NotPresent);
-                    c.ConfigureTestServices(srv => srv.AddTransient(_ => service.Object));
+                    var mediatorMock = new Mock<IMediator>();
+                    mediatorMock
+                        .Setup(m => m.Send(It.IsAny<CreateNoteRequest>(), It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(Result.NotPresent);
+                    c.ConfigureTestServices(srv => { srv.AddTransient(_ => mediatorMock.Object); });
                 })
                 .CreateClient("admin123");
 

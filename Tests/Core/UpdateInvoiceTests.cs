@@ -3,7 +3,7 @@ using Core.Repositories;
 using FluentAssertions;
 using Moq;
 using System.Threading.Tasks;
-
+using Core.Handlers;
 using Xunit;
 
 namespace Tests.Core
@@ -11,7 +11,7 @@ namespace Tests.Core
     public class UpdateInvoiceTests
     {
         private readonly Mock<IInvoicesRepository> _repository;
-        private readonly InvoicesService _sut;
+        private readonly UpdateInvoiceHandler _sut;
 
         public UpdateInvoiceTests()
         {
@@ -30,7 +30,7 @@ namespace Tests.Core
                     InvoiceId = 2,
                     Identifier = "INV-002"
                 });
-            _sut = new InvoicesService(_repository.Object);
+            _sut = new UpdateInvoiceHandler(_repository.Object);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace Tests.Core
             };
 
             //Act
-            var result = await _sut.Update(request);
+            var result = await _sut.Handle(request);
 
             //Assert
             var invoice = result.Item;
@@ -69,7 +69,7 @@ namespace Tests.Core
             };
 
             //Act
-            await _sut.Update(request);
+            await _sut.Handle(request);
 
             //Assert
             _repository.Verify(c => c.Update(), Times.Once);
@@ -88,7 +88,7 @@ namespace Tests.Core
             };
 
             //Act
-            var result = await _sut.Update(request);
+            var result = await _sut.Handle(request);
 
             //Assert
             result.ShouldFail();
@@ -107,7 +107,7 @@ namespace Tests.Core
             };
 
             //Act
-            var result = await _sut.Update(request);
+            var result = await _sut.Handle(request);
 
             //Assert
             result.ShouldFail();
@@ -127,7 +127,7 @@ namespace Tests.Core
             };
 
             //Act
-            var result = await _sut.Update(request);
+            var result = await _sut.Handle(request);
 
             //Assert
             result.ShouldFail();

@@ -3,7 +3,7 @@ using Core.Repositories;
 using FluentAssertions;
 using Moq;
 using System.Threading.Tasks;
-
+using Core.Handlers;
 using Xunit;
 
 namespace Tests.Core
@@ -11,12 +11,12 @@ namespace Tests.Core
     public class CreateInvoiceTests
     {
         private readonly Mock<IInvoicesRepository> _repository;
-        private readonly InvoicesService _sut;
+        private readonly CreateInvoiceHandler _sut;
 
         public CreateInvoiceTests()
         {
             _repository = new Mock<IInvoicesRepository>();
-            _sut = new InvoicesService(_repository.Object);
+            _sut = new CreateInvoiceHandler(_repository.Object);
         }
 
         [Fact]
@@ -31,7 +31,7 @@ namespace Tests.Core
             };
 
             //Act
-            var result = await _sut.Create(request);
+            var result = await _sut.Handle(request);
 
             //Assert
             var invoice = result.Item;
@@ -53,7 +53,7 @@ namespace Tests.Core
             };
 
             //Act
-            await _sut.Create(request);
+            await _sut.Handle(request);
 
             //Assert
             _repository.Verify(c => c.Create(It.IsAny<Invoice>()), Times.Once);
@@ -71,7 +71,7 @@ namespace Tests.Core
             };
 
             //Act
-            var result = await _sut.Create(request);
+            var result = await _sut.Handle(request);
 
             //Assert
             result.ShouldBeSuccess();
@@ -93,7 +93,7 @@ namespace Tests.Core
             };
 
             //Act
-            var result = await _sut.Create(request);
+            var result = await _sut.Handle(request);
 
             //Assert
             _repository.Verify(c => c.Create(It.IsAny<Invoice>()), Times.Never);

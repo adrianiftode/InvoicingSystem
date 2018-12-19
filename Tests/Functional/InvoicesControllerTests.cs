@@ -34,9 +34,7 @@ namespace Tests.Functional
             var response = await client.GetAsync(path);
 
             //Assert
-            var content = await response.Content.ReadAsStringAsync();
-            _output.WriteLine(content);
-            response.StatusCode.Should().Be(expectedStatusCode);
+            response.StatusCode.Should().Be(expectedStatusCode, await response.Content.ReadAsStringAsync());
         }
 
         [Theory]
@@ -54,7 +52,7 @@ namespace Tests.Functional
             //Assert
             var content = await response.Content.ReadAsStringAsync();
             _output.WriteLine(content);
-            response.StatusCode.Should().Be(expectedStatusCode);
+            response.StatusCode.Should().Be(expectedStatusCode, await response.Content.ReadAsStringAsync());
         }
 
         [Fact]

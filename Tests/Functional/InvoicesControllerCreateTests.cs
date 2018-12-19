@@ -6,8 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
-
+using MediatR;
 using Tests.Fixtures;
 using Xunit;
 
@@ -24,9 +25,9 @@ namespace Tests.Functional
             _client = _factory
                 .WithWebHostBuilder(c =>
                 {
-                    var invoicesServiceMock = new Mock<IInvoicesService>();
+                    var invoicesServiceMock = new Mock<IMediator>();
                     invoicesServiceMock
-                        .Setup(m => m.Create(It.IsAny<CreateInvoiceRequest>()))
+                        .Setup(m => m.Send(It.IsAny<CreateInvoiceRequest>(), It.IsAny<CancellationToken>()))
                         .ReturnsAsync(new Invoice
                         {
                             Identifier = "INV-001",
@@ -37,8 +38,7 @@ namespace Tests.Functional
                         srv.AddTransient(_ => invoicesServiceMock.Object);
                     });
                 })
-                .CreateClient()
-                .WithApiKey("user123");
+                .CreateClient("user123");
         }
 
         [Fact]
@@ -115,8 +115,7 @@ namespace Tests.Functional
                     var invoicesRepositoryMock = new Mock<IInvoicesRepository>();
                     c.ConfigureTestServices(srv => srv.AddTransient(_ => invoicesRepositoryMock.Object));
                 })
-                .CreateClient()
-                .WithApiKey("admin123");
+                .CreateClient("admin123");
 
             //Act
             var response = await client.PostAsJsonAsync("/invoices", new
@@ -126,7 +125,7 @@ namespace Tests.Functional
             });
 
             //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.Created);
+            response.StatusCode.Should().Be(HttpStatusCode.Created, await response.Content.ReadAsStringAsync());
         }
     }
 }

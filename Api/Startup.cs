@@ -1,6 +1,7 @@
 ﻿using Api.Authentication;
 using Core;
 using Database;
+using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,12 +31,11 @@ namespace Api
 
             services
                 .AddRepositories(Configuration)
-                .AddCoreServices()
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 ;
 
-            //services.AddMediatr
+            services.AddMediatR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

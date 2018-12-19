@@ -24,20 +24,20 @@ namespace Tests.Functional
         public async Task Get_ShouldReturnExpectedResponse(string path, HttpStatusCode expectedStatusCode)
         {
             //Arrange
-            var client = _factory.CreateClient().WithApiKey("admin123");
+            var client = _factory.CreateClient("admin123");
 
             //Act
             var response = await client.GetAsync(path);
 
             //Assert
-            response.StatusCode.Should().Be(expectedStatusCode);
+            response.StatusCode.Should().Be(expectedStatusCode, await response.Content.ReadAsStringAsync());
         }
 
         [Fact]
-        public async Task Post_WithDifferentUserThanTheOneThaCreatedTheNote_ReturnsForbidden()
+        public async Task Put_WithDifferentUserThanTheOneThatCreatedTheNote_ReturnsForbidden()
         {
             //Arrange
-            var client = _factory.CreateClient().WithApiKey("admin345");
+            var client = _factory.CreateClient("admin345");
 
             //Act
             var response = await client.PutAsJsonAsync("/notes", new

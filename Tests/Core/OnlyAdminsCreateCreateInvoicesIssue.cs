@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Core;
+using Core.Handlers;
 using Core.Repositories;
 using Moq;
 using Xunit;
@@ -8,12 +9,12 @@ namespace Tests.Core
 {
     public class OnlyAdminsCreateCreateInvoicesIssue
     {
-        private readonly InvoicesService _sut;
+        private readonly CreateInvoiceHandler _sut;
 
         public OnlyAdminsCreateCreateInvoicesIssue()
         {
             var repository = new Mock<IInvoicesRepository>();
-            _sut = new InvoicesService(repository.Object);
+            _sut = new CreateInvoiceHandler(repository.Object);
         }
 
         [Fact]
@@ -28,7 +29,7 @@ namespace Tests.Core
             };
 
             //Act
-            var result = await _sut.Create(request);
+            var result = await _sut.Handle(request);
 
             //Assert
             result.ShouldFail();
