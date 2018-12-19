@@ -45,7 +45,6 @@ namespace Database
                     UpdatedBy = "1"
                 }
             );
-
         }
 
         private static void RegisterConfigurations(ModelBuilder modelBuilder)

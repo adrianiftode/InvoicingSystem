@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
+using System.Net.Http;
 
 namespace Tests.Functional
 {
@@ -9,5 +10,9 @@ namespace Tests.Functional
             client.DefaultRequestHeaders.Add("X-Api-Key", password);
             return client;
         }
+
+        public static HttpClient CreateClient<TStartup>(this WebApplicationFactory<TStartup> factory, string password)
+            where TStartup : class
+            => factory.CreateClient().WithApiKey(password);
     }
 }

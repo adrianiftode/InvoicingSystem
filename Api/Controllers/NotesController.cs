@@ -27,6 +27,7 @@ namespace Api.Controllers
         [ProducesResponseType(201, Type = typeof(NoteModel))]
         public async Task<ActionResult<NoteModel>> Create([FromBody]CreateNoteRequestModel request)
         {
+            
             var result = await _notesService.Create(new CreateNoteRequest
             {
                 InvoiceId = request.InvoiceId,
@@ -36,7 +37,7 @@ namespace Api.Controllers
 
             return CreatedResult(result, NoteMapper.Map, nameof(Get), new
             {
-                id = result.Item.NoteId
+                id = result.Item?.NoteId
             });
 
         }
