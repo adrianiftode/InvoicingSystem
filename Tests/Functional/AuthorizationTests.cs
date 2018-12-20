@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Api;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Tests.Functional.Extensions;
 using Xunit;
 
 namespace Tests.Functional
@@ -33,8 +34,7 @@ namespace Tests.Functional
         public async Task WithRightSecret_ReturnsOkAndIdentityInfo()
         {
             //Arrange
-            var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Add("X-Api-Key", "user123");
+            var client = _factory.CreateClient("user123");
             
             //Act
             var response = await client.GetAsync("/invoices/1");
@@ -47,8 +47,7 @@ namespace Tests.Functional
         public async Task WithWrongSecret_ReturnsUnauthorized()
         {
             //Arrange
-            var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Add("X-Api-Key", "no-valid-user-key");
+            var client = _factory.CreateClient("no-valid-user-key");
 
             //Act
             var response = await client.GetAsync("/invoices/1");

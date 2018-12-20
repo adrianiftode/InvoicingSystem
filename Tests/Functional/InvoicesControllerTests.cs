@@ -3,7 +3,8 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Api.Models;
-using Tests.Fixtures;
+using Tests.Functional.Extensions;
+using Tests.Functional.Fixtures;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -12,12 +13,10 @@ namespace Tests.Functional
     public class InvoicesControllerTests : IClassFixture<InMemoryWebApplicationFactory>
     {
         private readonly InMemoryWebApplicationFactory _factory;
-        private readonly ITestOutputHelper _output;
 
-        public InvoicesControllerTests(InMemoryWebApplicationFactory factory, ITestOutputHelper output)
+        public InvoicesControllerTests(InMemoryWebApplicationFactory factory)
         {
             _factory = factory;
-            _output = output;
         }
 
         [Theory]
@@ -50,8 +49,6 @@ namespace Tests.Functional
             var response = await client.GetAsync(path);
 
             //Assert
-            var content = await response.Content.ReadAsStringAsync();
-            _output.WriteLine(content);
             response.StatusCode.Should().Be(expectedStatusCode, await response.Content.ReadAsStringAsync());
         }
 

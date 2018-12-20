@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using Api;
 using Database;
+using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Tests.Functional.Extensions;
 
-namespace Tests.Fixtures
+namespace Tests.Functional.Fixtures
 {
     public class InMemoryWebApplicationFactory
         : WebApplicationFactory<Startup>
@@ -36,7 +38,7 @@ namespace Tests.Fixtures
 
             builder.ConfigureTestServices(services =>
             {
-                var sp = services.BuildServiceProvider();
+                var sp = ServiceCollectionContainerBuilderExtensions.BuildServiceProvider(services);
 
                 using (var scope = sp.CreateScope())
                 {
@@ -47,5 +49,10 @@ namespace Tests.Fixtures
                 }
             });
         }
+
+        public WebApplicationFactory<Startup> WithResponse<TRequest, TResponse>
+            (TResponse response)
+            where TRequest : IRequest<TResponse>
+            => this.WithResponse<Startup, TRequest, TResponse>(response);
     }
 }

@@ -4,6 +4,7 @@ using FluentAssertions;
 using Moq;
 using System.Threading.Tasks;
 using Core.Handlers;
+using Tests.Extensions;
 using Xunit;
 
 namespace Tests.Core

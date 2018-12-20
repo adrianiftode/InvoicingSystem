@@ -2,7 +2,8 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Tests.Fixtures;
+using Tests.Functional.Extensions;
+using Tests.Functional.Fixtures;
 using Xunit;
 
 namespace Tests.Functional

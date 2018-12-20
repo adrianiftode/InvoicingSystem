@@ -3,7 +3,7 @@ using System.Security.Principal;
 using Core;
 using FluentAssertions;
 
-namespace Tests.Core
+namespace Tests.Extensions
 {
     internal static class TestsHelpers
     {

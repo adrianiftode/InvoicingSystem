@@ -8,8 +8,10 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Api;
 using MediatR;
-using Tests.Fixtures;
+using Tests.Functional.Extensions;
+using Tests.Functional.Fixtures;
 using Xunit;
 
 namespace Tests.Functional
@@ -23,22 +25,13 @@ namespace Tests.Functional
         {
             _factory = factory;
             _client = _factory
-                .WithWebHostBuilder(c =>
+                .WithResponse<CreateInvoiceRequest, Result<Invoice>>(new Invoice
                 {
-                    var invoicesServiceMock = new Mock<IMediator>();
-                    invoicesServiceMock
-                        .Setup(m => m.Send(It.IsAny<CreateInvoiceRequest>(), It.IsAny<CancellationToken>()))
-                        .ReturnsAsync(new Invoice
-                        {
-                            Identifier = "INV-001",
-                            Amount = 150.05m
-                        });
-                    c.ConfigureTestServices(srv =>
-                    {
-                        srv.AddTransient(_ => invoicesServiceMock.Object);
-                    });
+                    Identifier = "INV-001",
+                    Amount = 150.05m
                 })
-                .CreateClient("user123");
+               .CreateClient("user123")
+                ;
         }
 
         [Fact]

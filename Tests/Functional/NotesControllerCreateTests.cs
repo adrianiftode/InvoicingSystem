@@ -6,10 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
-using Tests.Fixtures;
+using Tests.Functional.Extensions;
+using Tests.Functional.Fixtures;
 using Xunit;
 
 namespace Tests.Functional
@@ -29,17 +28,11 @@ namespace Tests.Functional
         public async Task Create_WithValidRequest_ShouldReturnCreatedWithInvoice()
         {
             // Arrange
-            var client = _factory.WithWebHostBuilder(c =>
+            var client = _factory
+                .WithResponse<CreateNoteRequest, Result<Note>>(new Note
                 {
-                    var mediatorMock = new Mock<IMediator>();
-                    mediatorMock
-                        .Setup(m => m.Send(It.IsAny<CreateNoteRequest>(), It.IsAny<CancellationToken>()))
-                        .ReturnsAsync(new Note
-                        {
-                            NoteId = 2,
-                            Text = "Text"
-                        });
-                    c.ConfigureTestServices(srv => { srv.AddTransient(_ => mediatorMock.Object); });
+                    NoteId = 2,
+                    Text = "Text"
                 })
                 .CreateClient("user123");
 
@@ -78,15 +71,8 @@ namespace Tests.Functional
         {
             // Arrange
             var client = _factory
-                .WithWebHostBuilder(c =>
-                {
-                    var mediatorMock = new Mock<IMediator>();
-                    mediatorMock
-                        .Setup(m => m.Send(It.IsAny<CreateNoteRequest>(), It.IsAny<CancellationToken>()))
-                        .ReturnsAsync(Result.NotPresent);
-                    c.ConfigureTestServices(srv => { srv.AddTransient(_ => mediatorMock.Object); });
-                })
-                .CreateClient("admin123");
+                    .WithResponse<CreateNoteRequest, Result<Note>>(Result.NotPresent)
+                    .CreateClient("admin123");
 
             //Act
             var response = await client.PostAsJsonAsync("/notes", new
