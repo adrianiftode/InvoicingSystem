@@ -1,12 +1,11 @@
-﻿using FluentAssertions;
+﻿using Api.Models;
+using FluentAssertions;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Api.Models;
 using Tests.Functional.Extensions;
 using Tests.Functional.Fixtures;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Tests.Functional
 {

@@ -1,5 +1,4 @@
 ﻿using Api.Authentication;
-using Core;
 using Database;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
