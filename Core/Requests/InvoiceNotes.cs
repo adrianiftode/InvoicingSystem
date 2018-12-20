@@ -4,8 +4,13 @@ using System.Threading.Tasks;
 using Core.Repositories;
 using MediatR;
 
-namespace Core.Handlers
+namespace Core
 {
+    public class InvoiceNotesQuery : Request, IRequest<IReadOnlyCollection<Note>>
+    {
+        public int InvoiceId { get; set; }
+    }
+
     public class InvoiceNotesHandler : IRequestHandler<InvoiceNotesQuery, IReadOnlyCollection<Note>>
     {
         private readonly IInvoicesRepository _invoicesRepository;

@@ -3,8 +3,14 @@ using System.Threading.Tasks;
 using Core.Repositories;
 using MediatR;
 
-namespace Core.Handlers
+namespace Core
 {
+    public class CreateNoteRequest : Request, IRequest<Result<Note>>
+    {
+        public int InvoiceId { get; set; }
+        public string Text { get; set; }
+    }
+
     public class CreateNoteHandler : IRequestHandler<CreateNoteRequest, Result<Note>>
     {
         private readonly INotesRepository _notesRepository;

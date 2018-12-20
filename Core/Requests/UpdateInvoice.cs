@@ -1,10 +1,17 @@
-﻿using Core.Repositories;
-using MediatR;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using Core.Repositories;
+using MediatR;
 
-namespace Core.Handlers
+namespace Core
 {
+    public class UpdateInvoiceRequest : Request, IRequest<Result<Invoice>>
+    {
+        public int InvoiceId { get; set; }
+        public string Identifier { get; set; }
+        public decimal Amount { get; set; }
+    }
+
     public class UpdateInvoiceHandler : IRequestHandler<UpdateInvoiceRequest, Result<Invoice>>
     {
         private readonly IInvoicesRepository _invoicesRepository;

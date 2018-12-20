@@ -3,8 +3,13 @@ using System.Threading.Tasks;
 using Core.Repositories;
 using MediatR;
 
-namespace Core.Handlers
+namespace Core
 {
+    public class InvoiceByIdQuery : Request, IRequest<Invoice>
+    {
+        public int Id { get; set; }
+    }
+
     public class InvoiceByIdHandler : IRequestHandler<InvoiceByIdQuery, Invoice>
     {
         private readonly IInvoicesRepository _invoicesRepository;

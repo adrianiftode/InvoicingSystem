@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Core;
-using Core.Handlers;
 using Core.Repositories;
 using Moq;
 using Tests.Extensions;
