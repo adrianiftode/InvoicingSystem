@@ -145,16 +145,6 @@ namespace Tests.Extensions.FluentAssertions
         }
 
         protected override string Identifier => "Created";
-
-        public AndConstraint<ObjectAssertions> WithModel(string expectedField, string expectedErrorMessage, string because = "", params object[] becauseArgs)
-        {
-            Execute.Assertion
-                 .BecauseOf(because, becauseArgs)
-                 .ForCondition(_responseContent != null)
-                 .FailWith("Expected {context:Create} to have a model of type {0}, but the response was not provided", typeof(TModel).Name)
-                 ;
-            return new AndConstraint<ObjectAssertions>(new ObjectAssertions(_model));
-        }
     }
 
     public class BadRequestAssertions : ReferenceTypeAssertions<HttpResponseMessage, BadRequestAssertions>
