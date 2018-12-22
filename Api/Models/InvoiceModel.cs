@@ -8,7 +8,7 @@ namespace Api.Models
     {
         public int InvoiceId { get; set; }
         public decimal Amount { get; set; }
-        public IReadOnlyCollection<NoteModel> Notes { get; set; }
+        public IReadOnlyCollection<NoteModel> Notes { get; set; } = new NoteModel[] {};
         public string Identifier { get; set; }
     }
 

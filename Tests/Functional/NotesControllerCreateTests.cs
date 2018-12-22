@@ -1,14 +1,14 @@
 ﻿using Core;
 using Core.Repositories;
-using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Api.Models;
 using Tests.Functional.Extensions;
 using Tests.Functional.Fixtures;
+using Tests.Extensions.FluentAssertions;
 using Xunit;
 
 namespace Tests.Functional
@@ -44,10 +44,12 @@ namespace Tests.Functional
             });
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.Created, await response.Content.ReadAsStringAsync());
-            var content = await response.Content.ReadAsAsync<dynamic>();
-            ((string)content.text).Should().Be("Text");
-            ((int)content.noteId).Should().Be(2);
+            (await response.Should().BeCreated<NoteModel>())
+                .And.BeEquivalentTo(new
+                {
+                    Text = "Text",
+                    NoteId = 2
+                });
         }
 
         [Fact]
@@ -60,10 +62,8 @@ namespace Tests.Functional
             });
 
             //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            dynamic content = await response.Content.ReadAsAsync<dynamic>();
-            ((string[])content.invoiceId.ToObject<string[]>())
-                [0].Should().Contain("Could not convert string to int");
+            (await response.Should().BeBadRequest())
+                .WithError("invoiceId", "Could not convert string to int");
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace Tests.Functional
             });
 
             //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound, await response.Content.ReadAsStringAsync());
+            await response.Should().BeNotFound();
         }
 
         [Fact]
@@ -96,10 +96,8 @@ namespace Tests.Functional
             });
 
             //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            dynamic content = await response.Content.ReadAsAsync<dynamic>();
-            ((string[])content.Text.ToObject<string[]>())
-                [0].Should().Contain("The Text field is required.");
+            (await response.Should().BeBadRequest())
+                .WithError("Text", "The Text field is required.");
 
         }
 
@@ -110,10 +108,8 @@ namespace Tests.Functional
             var response = await _defaultClient.PostAsJsonAsync("/notes", default(object));
 
             //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            dynamic content = await response.Content.ReadAsAsync<dynamic>();
-            ((string[])content[""].ToObject<string[]>())
-                [0].Should().Contain("A non-empty request body is required.");
+            (await response.Should().BeBadRequest())
+                .WithError("", "A non-empty request body is required.");
         }
 
         [Fact]
@@ -136,7 +132,11 @@ namespace Tests.Functional
             });
 
             //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.Created, await response.Content.ReadAsStringAsync());
+            (await response.Should().BeCreated<NoteModel>())
+                .And.BeEquivalentTo(new
+                {
+                    Text = "text"
+                });
         }
     }
 }

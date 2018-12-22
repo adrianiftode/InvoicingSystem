@@ -1,9 +1,9 @@
-﻿using FluentAssertions;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Tests.Functional.Extensions;
 using Tests.Functional.Fixtures;
+using Tests.Extensions.FluentAssertions;
 using Xunit;
 
 namespace Tests.Functional
@@ -31,7 +31,7 @@ namespace Tests.Functional
             var response = await client.GetAsync(path);
 
             //Assert
-            response.StatusCode.Should().Be(expectedStatusCode, await response.Content.ReadAsStringAsync());
+            await response.Should().BeWithStatusCode(expectedStatusCode);
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace Tests.Functional
             });
 
             //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+            await response.Should().BeForbidden();
         }
     }
 }

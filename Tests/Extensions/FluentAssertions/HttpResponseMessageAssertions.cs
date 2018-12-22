@@ -1,54 +1,25 @@
-﻿using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentAssertions.Primitives;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Tests.Extensions.FluentAssertions
 {
 
     public static class HttpResponseMessageExtensions
     {
-        public static HttpResponseMessageExtendedAssertions Should(this HttpResponseMessage actual)
+        public static async Task<string> GetStringContent(this HttpResponseMessage response)
         {
-            return new HttpResponseMessageExtendedAssertions(actual);
-        }
-    }
-
-    public class HttpResponseMessageExtendedAssertions : ReferenceTypeAssertions<HttpResponseMessage, HttpResponseMessageExtendedAssertions>
-    {
-        public HttpResponseMessageExtendedAssertions(HttpResponseMessage value)
-        {
-            Subject = value;
-        }
-        protected override string Identifier => $"{nameof(HttpResponseMessage)}";
-
-        [CustomAssertion]
-        public HttpResponseMessageExtendedAssertions BeWithStatusCode(HttpStatusCode expectedStatusCode, string because = "", params object[] becauseArgs)
-        {
-            ExecuteAssertion(expectedStatusCode, because, becauseArgs);
-            return this;
-        }
-
-        [CustomAssertion]
-        public HttpResponseMessageExtendedAssertions BeOk(string because = "", params object[] becauseArgs)
-        {
-            ExecuteAssertion(HttpStatusCode.OK, because, becauseArgs);
-            return this;
-        }
-
-        [CustomAssertion]
-        public async Task<HttpResponseMessageExtendedAssertions> WithModel<TModel>(object expectedModel, 
-            string because = "", params object[] becauseArgs)
-        {
-            var actualModel = await Subject.Content.ReadAsAsync<TModel>();
-
             string beautified;
             try
             {
-                var content = await Subject.Content.ReadAsStringAsync();
+                var content = await response.Content.ReadAsStringAsync();
                 beautified = JToken.Parse(content).ToString();
             }
             catch
@@ -56,17 +27,177 @@ namespace Tests.Extensions.FluentAssertions
                 beautified = "The response content could not be parsed.";
             }
 
-            actualModel.Should().BeEquivalentTo(expectedModel, "The response had the following content {0}", beautified);
-            return this;
+            return beautified;
+        }
+    }
+    public static class HttpResponseMessageFluentAssertionsExtensions
+    {
+        public static HttpResponseMessageExtendedAssertions Should(this HttpResponseMessage actual)
+        {
+            return new HttpResponseMessageExtendedAssertions(actual);
+        }
+    }
+
+    public class HttpResponseMessageExtendedAssertions : ReferenceTypeAssertions<HttpResponseMessage,
+            HttpResponseMessageExtendedAssertions>
+    {
+        public HttpResponseMessageExtendedAssertions(HttpResponseMessage value)
+        {
+            Subject = value;
         }
 
-        private void ExecuteAssertion(HttpStatusCode expectedStatusCode, string because, object[] becauseArgs)
+        protected override string Identifier => $"{nameof(HttpResponseMessageExtendedAssertions)}";
+
+        public async Task BeWithStatusCode(HttpStatusCode expectedStatusCode,
+            string because = "", params object[] becauseArgs)
         {
+            var content = await Subject.GetStringContent();
             Execute.Assertion
                 .BecauseOf(because, becauseArgs)
                 .ForCondition(expectedStatusCode == Subject.StatusCode)
-                .FailWith("Expected HttpStatusCode to be {0}{because}, but found {1}. Content was {2}"
-                    , expectedStatusCode, Subject.StatusCode, Subject.Content.ReadAsStringAsync().Result);
+                .FailWith("Expected {0} {because}, but found {1}. The content was {2}"
+                    , expectedStatusCode, Subject.StatusCode, content);
+        }
+
+        public async Task<AndConstraint<ObjectAssertions>> BeOk<TModel>(string because = "",
+            params object[] becauseArgs)
+        {
+            var subjectModel = await Subject.Content.ReadAsAsync<TModel>();
+            var content = await Subject.GetStringContent();
+            Execute.Assertion
+                .BecauseOf(because, becauseArgs)
+                .ForCondition(HttpStatusCode.OK == Subject.StatusCode)
+                .FailWith("Expected OK {because}, but found {0}. The content was {1}"
+                    , Subject.StatusCode, content);
+            
+            return new AndConstraint<ObjectAssertions>(new ObjectAssertions(subjectModel));
+        }
+
+        public async Task<AndConstraint<ObjectAssertions>> BeCreated<TModel>(string because = "",
+            params object[] becauseArgs)
+        {
+            var subjectModel = await Subject.Content.ReadAsAsync<TModel>();
+            var content = await Subject.GetStringContent();
+            Execute.Assertion
+                .BecauseOf(because, becauseArgs)
+                .ForCondition(HttpStatusCode.Created == Subject.StatusCode)
+                .FailWith("Expected Created {because}, but found {0}. The content was {1}"
+                    , Subject.StatusCode, content);
+
+            return new AndConstraint<ObjectAssertions>(new ObjectAssertions(subjectModel));
+        }
+
+        public async Task<BadRequestAssertions> BeBadRequest(string because = "", params object[] becauseArgs)
+        {
+            var content = await Subject.GetStringContent();
+            var expandoContent = await Subject.Content.ReadAsAsync<ExpandoObject>();
+            Execute.Assertion
+                .BecauseOf(because, becauseArgs)
+                .ForCondition(HttpStatusCode.BadRequest == Subject.StatusCode)
+                .FailWith("Expected OK {because}, but found {0}. The content was {1}"
+                    , Subject.StatusCode, content);
+
+            return new BadRequestAssertions(Subject, content, expandoContent);
+        }
+
+        public async Task BeNotFound(string because = "", params object[] becauseArgs)
+        {
+            var content = await Subject.GetStringContent();
+            Execute.Assertion
+                .BecauseOf(because, becauseArgs)
+                .ForCondition(HttpStatusCode.NotFound == Subject.StatusCode)
+                .FailWith("Expected NotFound {because}, but found {0}. The content was {1}"
+                    , Subject.StatusCode, content);
+        }
+
+        public async Task BeForbidden(string because = "", params object[] becauseArgs)
+        {
+            var content = await Subject.GetStringContent();
+            Execute.Assertion
+                .BecauseOf(because, becauseArgs)
+                .ForCondition(HttpStatusCode.Forbidden == Subject.StatusCode)
+                .FailWith("Expected Forbidden {because}, but found {0}. The content was {1}"
+                    , Subject.StatusCode, content);
+        }
+    }
+
+    public class ContentAssertions : ReferenceTypeAssertions<string, ContentAssertions>
+    {
+        public ContentAssertions(string content)
+        {
+            Subject = content;
+        }
+
+        protected override string Identifier => "content";
+    }
+
+    public class CreatedAssertions<TModel> : ReferenceTypeAssertions<HttpResponseMessage, CreatedAssertions<TModel>>
+    {
+        private readonly TModel _model;
+        private readonly string _responseContent;
+        private readonly ExpandoObject _responseContentExpando;
+        public CreatedAssertions(HttpResponseMessage value, TModel model, string responseContent, ExpandoObject responseContentExpando)
+        {
+            Subject = value;
+            _model = model;
+            _responseContent = responseContent;
+            _responseContentExpando = responseContentExpando;
+        }
+
+        protected override string Identifier => "Created";
+
+        public AndConstraint<ObjectAssertions> WithModel(string expectedField, string expectedErrorMessage, string because = "", params object[] becauseArgs)
+        {
+            Execute.Assertion
+                 .BecauseOf(because, becauseArgs)
+                 .ForCondition(_responseContent != null)
+                 .FailWith("Expected {context:Create} to have a model of type {0}, but the response was not provided", typeof(TModel).Name)
+                 ;
+            return new AndConstraint<ObjectAssertions>(new ObjectAssertions(_model));
+        }
+    }
+
+    public class BadRequestAssertions : ReferenceTypeAssertions<HttpResponseMessage, BadRequestAssertions>
+    {
+        private readonly string _responseContent;
+        private readonly ExpandoObject _responseContentExpando;
+        public BadRequestAssertions(HttpResponseMessage value, string responseContent, ExpandoObject responseContentExpando)
+        {
+            Subject = value;
+            _responseContent = responseContent;
+            _responseContentExpando = responseContentExpando;
+        }
+
+        protected override string Identifier => "BadRequest";
+
+        public AndConstraint<BadRequestAssertions> WithError(string expectedField, string expectedErrorMessage, string because = "", params object[] becauseArgs)
+        {
+            IDictionary<string, object> properties = _responseContentExpando;
+            List<string> errors = properties != null && properties.ContainsKey(expectedField)
+                ? ((List<object>)properties[expectedField]).Select(c => c.ToString()).ToList()
+                : null;
+
+            Execute.Assertion
+                .BecauseOf(because, becauseArgs)
+                .ForCondition(_responseContent != null)
+                .FailWith("Expected {context:BadRequest} to have a response body, but the response was not provided")
+
+                .Then
+                .ForCondition(properties.ContainsKey(expectedField))
+                .FailWith("Expected {context:BadRequest} to contain a response with a field named {0}, but found {1}. " +
+                          "The {context:BadRequest} response content was {3}",
+                    expectedField, properties.Keys, _responseContent)
+
+                .Then
+                .ForCondition(errors.Any(c => c.Contains(expectedErrorMessage)))
+                .FailWith("Expected {context:BadRequest} to contain " +
+                          "the error message {0} for the field {1}, " +
+                          "but no such message was found in the actual source: {2}",
+                    expectedErrorMessage,
+                    expectedField,
+                    errors)
+                ;
+            return new AndConstraint<BadRequestAssertions>(new BadRequestAssertions(Subject, _responseContent, _responseContentExpando));
         }
     }
 }

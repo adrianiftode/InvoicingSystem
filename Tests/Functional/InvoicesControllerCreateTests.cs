@@ -1,12 +1,12 @@
-﻿using Core;
+﻿using Api.Models;
+using Core;
 using Core.Repositories;
-using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Tests.Extensions.FluentAssertions;
 using Tests.Functional.Extensions;
 using Tests.Functional.Fixtures;
 using Xunit;
@@ -27,8 +27,7 @@ namespace Tests.Functional
                     Identifier = "INV-001",
                     Amount = 150.05m
                 })
-               .CreateClient("user123")
-                ;
+               .CreateClient("user123");
         }
 
         [Fact]
@@ -42,12 +41,13 @@ namespace Tests.Functional
             });
 
             //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.Created);
-            var content = await response.Content.ReadAsAsync<dynamic>();
-            ((decimal)content.amount).Should().Be(150.05m);
+            (await response.Should().BeCreated<InvoiceModel>())
+                .And.BeEquivalentTo(new InvoiceModel
+                {
+                    Amount = 150.05m,
+                    Identifier = "INV-001"
+                });
         }
-
-
 
         [Fact]
         public async Task Create_WithNotValidAmount_ShouldReturnBadRequest()
@@ -55,14 +55,12 @@ namespace Tests.Functional
             //Act
             var response = await _client.PostAsJsonAsync("/invoices", new
             {
-                amount = "asd"
+                amount = "Invalid Decimal Value"
             });
 
             //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            dynamic content = await response.Content.ReadAsAsync<dynamic>();
-            ((string[])content.amount.ToObject<string[]>())
-                [0].Should().Contain("Could not convert string to decimal");
+            (await response.Should().BeBadRequest())
+                .WithError("amount", "Could not convert string to decimal");
         }
 
         [Fact]
@@ -75,11 +73,8 @@ namespace Tests.Functional
             });
 
             //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            dynamic content = await response.Content.ReadAsAsync<dynamic>();
-            ((string[])content.Identifier.ToObject<string[]>())
-                [0].Should().Contain("The Identifier field is required."); //for the PascalCase style in the error messages see this discussion https://github.com/aspnet/Mvc/issues/5590
-
+            (await response.Should().BeBadRequest())
+                .WithError("Identifier", "The Identifier field is required.");
         }
 
         [Fact]
@@ -89,10 +84,9 @@ namespace Tests.Functional
             var response = await _client.PostAsJsonAsync("/invoices", default(object));
 
             //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            dynamic content = await response.Content.ReadAsAsync<dynamic>();
-            ((string[])content[""].ToObject<string[]>())
-                [0].Should().Contain("A non-empty request body is required.");
+            //Assert
+            (await response.Should().BeBadRequest())
+                .WithError("", "A non-empty request body is required.");
         }
 
         [Fact]
@@ -115,7 +109,12 @@ namespace Tests.Functional
             });
 
             //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.Created, await response.Content.ReadAsStringAsync());
+            (await response.Should().BeCreated<InvoiceModel>())
+                .And.BeEquivalentTo(new InvoiceModel
+                {
+                    Identifier = "INV-001",
+                    Amount = 150.05m
+                });
         }
     }
 }
