@@ -2,6 +2,7 @@
 using FluentAssertions.Execution;
 using FluentAssertions.Primitives;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
@@ -69,7 +70,7 @@ namespace Tests.Extensions.FluentAssertions
                 .ForCondition(HttpStatusCode.OK == Subject.StatusCode)
                 .FailWith("Expected OK {because}, but found {0}. The content was {1}"
                     , Subject.StatusCode, content);
-            
+
             return new AndConstraint<ObjectAssertions>(new ObjectAssertions(subjectModel));
         }
 
@@ -175,17 +176,19 @@ namespace Tests.Extensions.FluentAssertions
                 .Then
                 .ForCondition(properties.ContainsKey(expectedField))
                 .FailWith("Expected {context:BadRequest} to contain a response with a field named {0}, but found {1}. " +
-                          "The {context:BadRequest} response content was {3}",
+                          $"The response content was {Environment.NewLine} {{3}}",
                     expectedField, properties.Keys, _responseContent)
 
                 .Then
                 .ForCondition(errors.Any(c => c.Contains(expectedErrorMessage)))
                 .FailWith("Expected {context:BadRequest} to contain " +
-                          "the error message {0} for the field {1}, " +
-                          "but no such message was found in the actual source: {2}",
+                          "the error message {0} associated with the {1} field, " +
+                          $"but no such message was found in the actual source: {Environment.NewLine}{{2}}{Environment.NewLine}" +
+                          $"{Environment.NewLine}{Environment.NewLine}The response content was {Environment.NewLine}{{3}}",
                     expectedErrorMessage,
                     expectedField,
-                    errors)
+                    errors,
+                    _responseContent)
                 ;
             return new AndConstraint<BadRequestAssertions>(new BadRequestAssertions(Subject, _responseContent, _responseContentExpando));
         }
