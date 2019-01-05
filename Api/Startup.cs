@@ -1,4 +1,5 @@
 ﻿using Api.Authentication;
+using Core.Pipeline;
 using Database;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -35,6 +36,8 @@ namespace Api
                 ;
 
             services.AddMediatR();
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AttachUser<,>));
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

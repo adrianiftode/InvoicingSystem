@@ -41,8 +41,7 @@ namespace Api.Controllers
             var result = await _mediator.Send(new CreateInvoiceRequest
             {
                 Amount = request.Amount,
-                Identifier = request.Identifier,
-                User = User
+                Identifier = request.Identifier
             });
 
             return CreatedResult(result, InvoiceMapper.Map, nameof(Get), new
@@ -59,8 +58,7 @@ namespace Api.Controllers
             {
                 InvoiceId = request.InvoiceId,
                 Amount = request.Amount,
-                Identifier = request.Identifier,
-                User = User
+                Identifier = request.Identifier
             });
 
             return Result(result, InvoiceMapper.Map);

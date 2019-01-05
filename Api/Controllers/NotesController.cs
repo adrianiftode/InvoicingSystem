@@ -17,7 +17,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<NoteModel>> Get(int id) 
+        public async Task<ActionResult<NoteModel>> Get(int id)
             => OkOrNotFound((await _mediator.Send(new NoteByIdQuery { Id = id })).Map());
 
         [HttpPost]
@@ -27,8 +27,7 @@ namespace Api.Controllers
             var result = await _mediator.Send(new CreateNoteRequest
             {
                 InvoiceId = requestModel.InvoiceId,
-                Text = requestModel.Text,
-                User = User
+                Text = requestModel.Text
             });
 
             return CreatedResult(result, NoteMapper.Map, nameof(Get), new
@@ -44,8 +43,7 @@ namespace Api.Controllers
             => Result(await _mediator.Send(new UpdateNoteRequest
             {
                 NoteId = requestModel.NoteId,
-                Text = requestModel.Text,
-                User = User
+                Text = requestModel.Text
             }), NoteMapper.Map);
     }
 }
