@@ -46,7 +46,7 @@ namespace Api.Controllers
 
             return CreatedResult(result, InvoiceMapper.Map, nameof(Get), new
             {
-                id = result.Item.InvoiceId
+                id = result.Item?.InvoiceId
             });
         }
 

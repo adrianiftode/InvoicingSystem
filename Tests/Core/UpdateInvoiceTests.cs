@@ -1,8 +1,10 @@
-﻿using Core;
+﻿using System.Linq;
+using Core;
 using Core.Repositories;
 using FluentAssertions;
 using Moq;
 using System.Threading.Tasks;
+using FluentValidation.Results;
 using Tests.Extensions;
 using Xunit;
 
@@ -116,9 +118,10 @@ namespace Tests.Core
         }
 
         [Fact]
-        public async Task Update_WhenIdentifierIsUsedByADifferentInvoice_ShouldNotUpdate()
+        public void Update_WhenIdentifierIsUsedByADifferentInvoice_ShouldNotUpdate()
         {
             //Arrange
+            var sut = new UpdateInvoiceValidator(_repository.Object);
             var request = new UpdateInvoiceRequest
             {
                 InvoiceId = 1,
@@ -127,12 +130,12 @@ namespace Tests.Core
             };
 
             //Act
-            var result = await _sut.Handle(request);
+            var result = sut.Validate(request);
 
             //Assert
-            result.ShouldFail();
-            result.Item.Should().BeNull();
-            _repository.Verify(c => c.Update(), Times.Never);
+            result.IsValid.Should().BeFalse();
+            result.Errors.Should().Contain(c => c.ErrorMessage == "The invoice cannot be updated " +
+                                                "because another invoice with the new identifier already exists.");
         }
     }
 }

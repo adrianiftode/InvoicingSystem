@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Core;
-using Core.Repositories;
+using FluentAssertions;
 using Moq;
 using Tests.Extensions;
 using Xunit;
@@ -9,12 +9,11 @@ namespace Tests.Core
 {
     public class OnlyAdminsCreateCreateInvoicesIssue
     {
-        private readonly CreateInvoiceHandler _sut;
+        private readonly CreateInvoiceAuthorization _sut;
 
         public OnlyAdminsCreateCreateInvoicesIssue()
         {
-            var repository = new Mock<IInvoicesRepository>();
-            _sut = new CreateInvoiceHandler(repository.Object);
+            _sut = new CreateInvoiceAuthorization();
         }
 
         [Fact]
@@ -29,10 +28,10 @@ namespace Tests.Core
             };
 
             //Act
-            var result = await _sut.Handle(request);
+            var result = await _sut.Authorize(request);
 
             //Assert
-            result.ShouldFail();
+            result.Should().BeFalse();
         }
     }
 }

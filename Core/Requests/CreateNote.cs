@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Core.Repositories;
+using FluentValidation;
 using MediatR;
 
 namespace Core
@@ -9,6 +10,25 @@ namespace Core
     {
         public int InvoiceId { get; set; }
         public string Text { get; set; }
+    }
+
+    public class CreateNoteValidator : AbstractValidator<CreateNoteRequest>
+    {
+        private readonly IInvoicesRepository _invoicesRepository;
+
+        public CreateNoteValidator(IInvoicesRepository invoicesRepository)
+        {
+            _invoicesRepository = invoicesRepository;
+
+            RuleFor(x => x)
+                .MustAsync(ValidateExists)
+                .WithMessage("Note could not be created because the targeted invoice is not present.");
+        }
+
+        public async Task<bool> ValidateExists(CreateNoteRequest request, CancellationToken cancellationToken)
+        {
+            return await _invoicesRepository.Get(request.InvoiceId) != null;
+        }
     }
 
     public class CreateNoteHandler : IRequestHandler<CreateNoteRequest, Result<Note>>
@@ -25,12 +45,7 @@ namespace Core
         public async Task<Result<Note>> Handle(CreateNoteRequest request, CancellationToken cancellationToken = default(CancellationToken))
         {
             var invoice = await _invoicesRepository.Get(request.InvoiceId);
-
-            if (invoice == null)
-            {
-                return Result.Error("Note could not be created because the targeted invoice is not present.");
-            }
-
+           
             var note = invoice.AddNote(request.Text, request.User.GetIdentity());
 
             await _notesRepository.Create(note);
