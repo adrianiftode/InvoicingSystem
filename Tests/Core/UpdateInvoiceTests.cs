@@ -88,14 +88,13 @@ namespace Tests.Core
                 Amount = 160.05m,
                 User = TestsHelpers.CreateUser("2", Roles.Admin)
             };
+            var sut = new UpdateInvoiceAuthorization(_repository.Object);
 
             //Act
-            var result = await _sut.Handle(request);
+            var result = await sut.Authorize(request);
 
             //Assert
-            result.ShouldFail();
-            result.Item.Should().BeNull();
-            _repository.Verify(c => c.Update(), Times.Never);
+            result.Should().BeFalse();
         }
 
         [Fact]
@@ -105,16 +104,17 @@ namespace Tests.Core
             var request = new UpdateInvoiceRequest
             {
                 InvoiceId = 2,
+                Identifier = "INV-02",
                 User = TestsHelpers.CreateUser("2", Roles.Admin)
             };
+            var sut = new UpdateInvoiceValidator(_repository.Object);
 
             //Act
-            var result = await _sut.Handle(request);
+            var result = await sut.ValidateAsync(request);
 
             //Assert
-            result.ShouldFail();
-            result.Item.Should().BeNull();
-            _repository.Verify(c => c.Update(), Times.Never);
+            result.IsValid.Should().BeFalse();
+            result.Errors.Should().Contain(c => c.ErrorCode == Result.NotPresent.StatusCode);
         }
 
         [Fact]
