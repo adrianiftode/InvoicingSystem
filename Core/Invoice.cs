@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Core
 {
-    public class Invoice
+    public partial class Invoice
     {
         public int InvoiceId { get; internal set; }
         public string Identifier { get; internal set; }
@@ -19,6 +20,6 @@ namespace Core
             };
             Notes.Add(newNote);
             return newNote;
-        }
+        }      
     }
 }

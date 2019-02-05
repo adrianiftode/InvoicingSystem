@@ -1,14 +1,15 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System;
 using Core.Pipeline;
 using Core.Repositories;
 using FluentValidation;
 using FluentValidation.Validators;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Core
 {
-    public class CreateInvoiceRequest : Request, IRequest<Result<Invoice>>
+    public class CreateInvoiceRequest : Request, IRequest<(Invoice invoice, Result result)>
     {
         public string Identifier { get; set; }
         public decimal Amount { get; set; }
@@ -35,9 +36,9 @@ namespace Core
                 .WithMessage("The invoice cannot be created because another invoice with the same Identifier already exists.");
         }
 
-        private async Task<bool> NotBeUsedByADifferentInvoice(CreateInvoiceRequest request, 
-            string property, 
-            PropertyValidatorContext propertyValidatorContext, 
+        private async Task<bool> NotBeUsedByADifferentInvoice(CreateInvoiceRequest request,
+            string property,
+            PropertyValidatorContext propertyValidatorContext,
             CancellationToken cancellationToken)
         {
             var anyWithNewIdentifier = await _repository.GetByIdentifier(request.Identifier);
@@ -50,7 +51,7 @@ namespace Core
         }
     }
 
-    public class CreateInvoiceHandler : IRequestHandler<CreateInvoiceRequest, Result<Invoice>>
+    public class CreateInvoiceHandler : IRequestHandler<CreateInvoiceRequest, (Invoice invoice, Result result)>
     {
         private readonly IInvoicesRepository _invoicesRepository;
 
@@ -58,7 +59,7 @@ namespace Core
         {
             _invoicesRepository = invoicesRepository;
         }
-        public async Task<Result<Invoice>> Handle(CreateInvoiceRequest request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<(Invoice invoice, Result result)> Handle(CreateInvoiceRequest request, CancellationToken cancellationToken = default(CancellationToken))
         {
             var invoice = new Invoice
             {

@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Core
 {
-    public class UpdateInvoiceRequest : Request, IRequest<Result<Invoice>>
+    public class UpdateInvoiceRequest : Request, IRequest<(Invoice invoice, Result result)>
     {
         public int InvoiceId { get; set; }
         public string Identifier { get; set; }
@@ -44,7 +44,7 @@ namespace Core
             CancellationToken cancellationToken)
         {
             var anyWithNewIdentifier = await _repository.GetByIdentifier(request.Identifier);
-            return anyWithNewIdentifier == null;
+            return anyWithNewIdentifier == null || anyWithNewIdentifier.InvoiceId == request.InvoiceId;
         }
     }
 
@@ -65,7 +65,7 @@ namespace Core
         }
     }
 
-    public class UpdateInvoiceHandler : IRequestHandler<UpdateInvoiceRequest, Result<Invoice>>
+    public class UpdateInvoiceHandler : IRequestHandler<UpdateInvoiceRequest, (Invoice invoice, Result result)>
     {
         private readonly IInvoicesRepository _invoicesRepository;
 
@@ -73,7 +73,7 @@ namespace Core
         {
             _invoicesRepository = invoicesRepository;
         }
-        public async Task<Result<Invoice>> Handle(UpdateInvoiceRequest request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<(Invoice invoice, Result result)> Handle(UpdateInvoiceRequest request, CancellationToken cancellationToken = default(CancellationToken))
         {
             var invoice = await _invoicesRepository.Get(request.InvoiceId);
 

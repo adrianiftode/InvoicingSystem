@@ -23,6 +23,9 @@ namespace Api.Models
                 Notes = invoice.Notes.Select(n => n.Map()).ToList()
             } : null;
 
+        public static InvoiceModel Map(this (Invoice, Result) result)
+            => result.Item1.Map();
+
         public static IEnumerable<InvoiceModel> Map(this IEnumerable<Invoice> invoices)
             => invoices.Select(Map);
     }
