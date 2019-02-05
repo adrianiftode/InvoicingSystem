@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentValidation.Results;
 
 namespace Core.Pipeline
 {
@@ -17,12 +18,17 @@ namespace Core.Pipeline
             _validators = validators;
         }
 
-        public Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
             var context = new ValidationContext(request);
 
-            var failures = _validators
-                .Select(v => v.Validate(context))
+            var results = new List<ValidationResult>();
+            foreach (var validator in _validators)
+            {
+                results.Add(await validator.ValidateAsync(context, cancellationToken));
+            }
+
+            var failures = results
                 .SelectMany(result => result.Errors)
                 .Where(f => f != null)
                 .ToList();
@@ -46,10 +52,10 @@ namespace Core.Pipeline
                     failResult = Result.Error(failures.Select(c=>c.ErrorMessage).ToArray());
                 }
 
-                return Task.FromResult(failResult.ConvertTo<TResponse>());
+                return failResult.ConvertTo<TResponse>();
             }
 
-            return next();
+            return await next();
         }
     }
 }

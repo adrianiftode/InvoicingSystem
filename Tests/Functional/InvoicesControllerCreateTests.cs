@@ -13,6 +13,7 @@ using Xunit;
 
 namespace Tests.Functional
 {
+
     public class InvoicesControllerCreateTests : IClassFixture<InMemoryWebApplicationFactory>
     {
         private readonly InMemoryWebApplicationFactory _factory;
@@ -22,7 +23,7 @@ namespace Tests.Functional
         {
             _factory = factory;
             _client = _factory
-                .WithResponse<CreateInvoiceRequest, Result<Invoice>>(new Invoice
+                .WithResponse<CreateInvoiceRequest, (Invoice invoice, Result result)>(new Invoice
                 {
                     Identifier = "INV-001",
                     Amount = 150.05m

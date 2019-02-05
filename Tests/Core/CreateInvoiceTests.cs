@@ -34,7 +34,7 @@ namespace Tests.Core
             var result = await _sut.Handle(request);
 
             //Assert
-            var invoice = result.Item;
+            var invoice = result.invoice;
             result.ShouldBeSuccess();
             invoice.UpdatedBy.Should().Be("1");
             invoice.Amount.Should().Be(request.Amount);
@@ -75,7 +75,7 @@ namespace Tests.Core
 
             //Assert
             result.ShouldBeSuccess();
-            result.Item.Should().NotBeNull();
+            result.result.Should().NotBeNull();
         }
 
         [Fact]

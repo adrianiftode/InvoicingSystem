@@ -67,6 +67,6 @@ namespace Tests.Functional
                     Identifier = "INV-001",
                     InvoiceId = 1
                 });
-        }
+        }        
     }
 }
