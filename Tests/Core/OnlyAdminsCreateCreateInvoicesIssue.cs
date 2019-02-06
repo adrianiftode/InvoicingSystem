@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Core;
 using FluentAssertions;
-using Moq;
 using Tests.Extensions;
 using Xunit;
 

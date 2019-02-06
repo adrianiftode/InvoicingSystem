@@ -1,10 +1,8 @@
-﻿using System.Linq;
-using Core;
+﻿using Core;
 using Core.Repositories;
 using FluentAssertions;
 using Moq;
 using System.Threading.Tasks;
-using FluentValidation.Results;
 using Tests.Extensions;
 using Xunit;
 

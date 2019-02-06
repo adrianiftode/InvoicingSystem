@@ -1,9 +1,4 @@
 ﻿using Api.Models;
-using Core;
-using Core.Repositories;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Tests.Extensions.FluentAssertions;
