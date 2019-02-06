@@ -1,19 +1,21 @@
 ﻿using Database;
 using Database.Repositories;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading.Tasks;
+using Tests.Extensions.Database;
 using Xunit;
 
 namespace Tests.Database
 {
     public class InvoicesRepositoryGetTests
     {
-        [Fact]
-        public async Task GetById_WhenExists_ReturnsInvoice()
+        [Theory]
+        [Contexts]
+        public async Task GetById_WhenExists_ReturnsInvoice(Func<string, InvoicingContext> factory)
         {
             //Arrange
-            using (var context = CreateContext(nameof(GetById_WhenExists_ReturnsInvoice)))
+            using (var context = factory(nameof(GetById_WhenExists_ReturnsInvoice)))
             {
                 var invoiceId = 1;
                 var sut = new InvoicesRepository(context);
@@ -27,11 +29,12 @@ namespace Tests.Database
             }
         }
 
-        [Fact]
-        public async Task GetNotesByInvoice_WhenNotPresent_ReturnsNull()
+        [Theory]
+        [Contexts]
+        public async Task GetNotesByInvoice_WhenNotPresent_ReturnsNull(Func<string, InvoicingContext> factory)
         {
             //Arrange
-            using (var context = CreateContext(nameof(GetNotesByInvoice_WhenNotPresent_ReturnsNull)))
+            using (var context = factory(nameof(GetNotesByInvoice_WhenNotPresent_ReturnsNull)))
             {
                 var sut = new InvoicesRepository(context);
 
@@ -43,11 +46,12 @@ namespace Tests.Database
             }
         }
 
-        [Fact]
-        public async Task GetNotesByInvoice_WhenInvoiceExistsButHasNoNotes_ReturnsEmpty()
+        [Theory]
+        [Contexts]
+        public async Task GetNotesByInvoice_WhenInvoiceExistsButHasNoNotes_ReturnsEmpty(Func<string, InvoicingContext> factory)
         {
             //Arrange
-            using (var context = CreateContext(nameof(GetNotesByInvoice_WhenInvoiceExistsButHasNoNotes_ReturnsEmpty)))
+            using (var context = factory(nameof(GetNotesByInvoice_WhenInvoiceExistsButHasNoNotes_ReturnsEmpty)))
             {
                 var sut = new InvoicesRepository(context);
 
@@ -60,11 +64,12 @@ namespace Tests.Database
             }
         }
 
-        [Fact]
-        public async Task GetNotesByInvoiceId_WhenExists_ReturnsNotes()
+        [Theory]
+        [Contexts]
+        public async Task GetNotesByInvoiceId_WhenExists_ReturnsNotes(Func<string, InvoicingContext> factory)
         {
             //Arrange
-            using (var context = CreateContext(nameof(GetNotesByInvoiceId_WhenExists_ReturnsNotes)))
+            using (var context = factory(nameof(GetNotesByInvoiceId_WhenExists_ReturnsNotes)))
             {
                 var invoiceId = 1;
                 var sut = new InvoicesRepository(context);
@@ -77,11 +82,12 @@ namespace Tests.Database
             }
         }
 
-        [Fact]
-        public async Task GetById_WhenNotPresent_ReturnsNull()
+        [Theory]
+        [Contexts]
+        public async Task GetById_WhenNotPresent_ReturnsNull(Func<string, InvoicingContext> factory)
         {
             //Arrange
-            using (var context = CreateContext(nameof(GetById_WhenNotPresent_ReturnsNull)))
+            using (var context = factory(nameof(GetById_WhenNotPresent_ReturnsNull)))
             {
                 var sut = new InvoicesRepository(context);
 
@@ -91,16 +97,6 @@ namespace Tests.Database
                 //Assert
                 invoice.Should().BeNull();
             }
-        }
-
-        private static InvoicingContext CreateContext(string databaseName)
-        {
-            var options = new DbContextOptionsBuilder<InvoicingContext>()
-                .UseInMemoryDatabase(databaseName)
-                .Options;
-            var context = new InvoicingContext(options);
-            context.Database.EnsureCreated(); // this will also call HasData
-            return context;
         }
     }
 }
