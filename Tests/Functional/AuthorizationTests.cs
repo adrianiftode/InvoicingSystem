@@ -1,7 +1,8 @@
-using FluentAssertions;
 using System.Net;
 using System.Threading.Tasks;
-using Tests.Fixtures;
+using Tests.Extensions.FluentAssertions;
+using Tests.Functional.Extensions;
+using Tests.Functional.Fixtures;
 using Xunit;
 
 namespace Tests.Functional
@@ -34,7 +35,7 @@ namespace Tests.Functional
             //Arrange
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Add("X-Api-Key", "user123");
-            
+
             //Act
             var response = await client.GetAsync("/invoices/1");
 
