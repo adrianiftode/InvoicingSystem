@@ -1,8 +1,8 @@
 ﻿using System.Net.Http;
 
-namespace Tests.Functional
+namespace Tests.Functional.Extensions
 {
-    public static class HttpClientExtensions
+    internal static class HttpClientExtensions
     {
         public static HttpClient WithApiKey(this HttpClient client, string password)
         {

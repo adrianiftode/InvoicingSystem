@@ -8,7 +8,7 @@ namespace Api.Models
     {
         public int InvoiceId { get; set; }
         public decimal Amount { get; set; }
-        public IReadOnlyCollection<NoteModel> Notes { get; set; }
+        public IReadOnlyCollection<NoteModel> Notes { get; set; } = new NoteModel[] {};
         public string Identifier { get; set; }
     }
 
@@ -22,6 +22,9 @@ namespace Api.Models
                 Identifier = invoice.Identifier,
                 Notes = invoice.Notes.Select(n => n.Map()).ToList()
             } : null;
+
+        public static InvoiceModel Map(this (Invoice, Result) result)
+            => result.Item1.Map();
 
         public static IEnumerable<InvoiceModel> Map(this IEnumerable<Invoice> invoices)
             => invoices.Select(Map);

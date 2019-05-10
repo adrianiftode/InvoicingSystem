@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using System.Net;
 using System.Threading.Tasks;
 using Tests.Fixtures;
@@ -25,7 +25,7 @@ namespace Tests.Functional
             var response = await client.GetAsync("/invoices/1");
 
             //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            await response.Should().BeWithStatusCode(HttpStatusCode.Unauthorized);
         }
 
         [Fact]
@@ -34,26 +34,25 @@ namespace Tests.Functional
             //Arrange
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Add("X-Api-Key", "user123");
-
+            
             //Act
             var response = await client.GetAsync("/invoices/1");
 
             //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            await response.Should().BeWithStatusCode(HttpStatusCode.OK);
         }
 
         [Fact]
         public async Task WithWrongSecret_ReturnsUnauthorized()
         {
             //Arrange
-            var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Add("X-Api-Key", "no-valid-user-key");
+            var client = _factory.CreateClient("no-valid-user-key");
 
             //Act
             var response = await client.GetAsync("/invoices/1");
 
             //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            await response.Should().BeWithStatusCode(HttpStatusCode.Unauthorized);
         }
     }
 }

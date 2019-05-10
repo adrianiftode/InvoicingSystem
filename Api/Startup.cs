@@ -1,6 +1,9 @@
 ﻿using Api.Authentication;
 using Core;
+using Core.Pipeline;
 using Database;
+using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,10 +33,19 @@ namespace Api
 
             services
                 .AddRepositories(Configuration)
-                .AddCoreServices()
                 .AddMvc()
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<UpdateNoteValidator>())
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 ;
+
+            services.AddMediatR();
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AttachUser<,>));
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(Validation<,>));
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(Authorization<,>));
+            services.AddScoped(typeof(IAuthorize<>), typeof(DefaultAuthorize<>));
+            services.AddScoped(typeof(IAuthorize<CreateInvoiceRequest>), typeof(CreateInvoiceAuthorization));
+            services.AddScoped(typeof(IAuthorize<UpdateNoteRequest>), typeof(UpdateNoteAuthorization));
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

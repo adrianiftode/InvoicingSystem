@@ -1,23 +1,20 @@
-﻿using FluentAssertions;
+﻿using Api.Models;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Api.Models;
-using Tests.Fixtures;
+using Tests.Extensions.FluentAssertions;
+using Tests.Functional.Extensions;
+using Tests.Functional.Fixtures;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Tests.Functional
 {
     public class InvoicesControllerTests : IClassFixture<InMemoryWebApplicationFactory>
     {
         private readonly InMemoryWebApplicationFactory _factory;
-        private readonly ITestOutputHelper _output;
 
-        public InvoicesControllerTests(InMemoryWebApplicationFactory factory, ITestOutputHelper output)
+        public InvoicesControllerTests(InMemoryWebApplicationFactory factory)
         {
             _factory = factory;
-            _output = output;
         }
 
         [Theory]
@@ -34,9 +31,7 @@ namespace Tests.Functional
             var response = await client.GetAsync(path);
 
             //Assert
-            var content = await response.Content.ReadAsStringAsync();
-            _output.WriteLine(content);
-            response.StatusCode.Should().Be(expectedStatusCode);
+            await response.Should().BeWithStatusCode(expectedStatusCode);
         }
 
         [Theory]
@@ -52,9 +47,7 @@ namespace Tests.Functional
             var response = await client.GetAsync(path);
 
             //Assert
-            var content = await response.Content.ReadAsStringAsync();
-            _output.WriteLine(content);
-            response.StatusCode.Should().Be(expectedStatusCode);
+            await response.Should().BeWithStatusCode(expectedStatusCode);
         }
 
         [Fact]
@@ -67,11 +60,13 @@ namespace Tests.Functional
             var response = await client.GetAsync("/invoices/1");
 
             //Assert
-            var invoice = await response.Content.ReadAsAsync<InvoiceModel>();
-            invoice.Amount.Should().Be(150.05m);
-            invoice.Identifier.Should().Be("INV-001");
-            invoice.InvoiceId.Should().Be(1);
-            invoice.Notes.Should().NotBeNullOrEmpty();
-        }
+            (await response.Should().BeOk<InvoiceModel>())
+                .And.BeEquivalentTo(new
+                {
+                    Amount = 150.05m,
+                    Identifier = "INV-001",
+                    InvoiceId = 1
+                });
+        }        
     }
 }

@@ -1,59 +1,49 @@
 ﻿using Api.Models;
+using Core;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Core;
 
 
 namespace Api.Controllers
 {
     public class NotesController : ApiController
     {
-        private readonly INotesService _notesService;
+        private readonly IMediator _mediator;
 
-        public NotesController(INotesService notesService)
+        public NotesController(IMediator mediator)
         {
-            _notesService = notesService;
+            _mediator = mediator;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<NoteModel>> Get(int id)
-        {
-            var note = await _notesService.Get(id);
-
-            return OkOrNotFound(note.Map());
-        }
+            => OkOrNotFound((await _mediator.Send(new NoteByIdQuery { Id = id })).Map());
 
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(NoteModel))]
-        public async Task<ActionResult<NoteModel>> Create([FromBody]CreateNoteRequestModel request)
+        public async Task<ActionResult<NoteModel>> Create([FromBody]CreateNoteRequestModel requestModel)
         {
-            var result = await _notesService.Create(new CreateNoteRequest
+            var result = await _mediator.Send(new CreateNoteRequest
             {
-                InvoiceId = request.InvoiceId,
-                Text = request.Text,
-                User = User
+                InvoiceId = requestModel.InvoiceId,
+                Text = requestModel.Text
             });
 
             return CreatedResult(result, NoteMapper.Map, nameof(Get), new
             {
-                id = result.Item.NoteId
+                id = result.Item?.NoteId
             });
-
         }
 
 
         [HttpPut]
         [ProducesResponseType(201, Type = typeof(NoteModel))]
-        public async Task<ActionResult<NoteModel>> Update([FromBody]UpdateNoteRequestModel request)
-        {
-            var result = await _notesService.Update(new UpdateNoteRequest
+        public async Task<ActionResult<NoteModel>> Update([FromBody]UpdateNoteRequestModel requestModel)
+            => Result(await _mediator.Send(new UpdateNoteRequest
             {
-                NoteId = request.NoteId,
-                Text = request.Text,
-                User = User
-            });
-
-            return Result(result, NoteMapper.Map);
-        }
+                NoteId = requestModel.NoteId,
+                Text = requestModel.Text
+            }), NoteMapper.Map);
     }
 }

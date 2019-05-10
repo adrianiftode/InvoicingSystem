@@ -1,25 +1,29 @@
-﻿using Database;
+﻿using System;
+using Database;
 using Database.Repositories;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Core;
+using Tests.Extensions.Database;
 using Xunit;
 
 namespace Tests.Database
 {
     public class InvoicesRepositoryCreateTests
     {
-        [Fact]
-        public async Task CreateInvoice_WhenInvoiceValid_ReturnsInvoice()
+        [Theory]
+        [Contexts]
+        public async Task CreateInvoice_WhenInvoiceValid_ReturnsInvoice(Func<string, InvoicingContext> factory)
         {
             //Arrange
-            using (var context = CreateContext(nameof(CreateInvoice_WhenInvoiceValid_ReturnsInvoice)))
+            using (var context = factory(nameof(CreateInvoice_WhenInvoiceValid_ReturnsInvoice)))
             {
-                var nextInvoiceId = await context.Invoices.MaxAsync(c => c.InvoiceId);
+                var nextInvoiceId = await context.GetNextInvoiceId();
                 var invoice = new Invoice
                 {
-                    InvoiceId = nextInvoiceId + 1 //see this why it needs the setup like this https://github.com/aspnet/EntityFrameworkCore/issues/12371
+                    InvoiceId = nextInvoiceId, 
+                    Identifier = "INV-" + nextInvoiceId,
+                    UpdatedBy = "Test"
                 };
                 var sut = new InvoicesRepository(context);
 
@@ -30,16 +34,6 @@ namespace Tests.Database
                 invoice.Should().NotBeNull();
                 invoice.InvoiceId.Should().BeGreaterThan(0);
             }
-        }
-
-        private static InvoicingContext CreateContext(string databaseName)
-        {
-            var options = new DbContextOptionsBuilder<InvoicingContext>()
-                .UseInMemoryDatabase(databaseName)
-                .Options;
-            var context = new InvoicingContext(options);
-            context.Database.EnsureCreated(); // this will also call HasData
-            return context;
         }
     }
 }

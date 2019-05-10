@@ -3,7 +3,7 @@ using System.Security.Principal;
 using Core;
 using FluentAssertions;
 
-namespace Tests.Core
+namespace Tests.Extensions
 {
     internal static class TestsHelpers
     {
@@ -11,6 +11,9 @@ namespace Tests.Core
 
         public static void ShouldBeSuccess<TItem>(this Result<TItem> result)
             => result.Status.Should().Be(ResultStatus.Success); // not really the fluent assertions style
+
+        public static void ShouldBeSuccess<TItem>(this (TItem, Result) result)
+            => result.Item2.Status.Should().Be(ResultStatus.Success); // not really the fluent assertions style
 
         public static void ShouldFail<TItem>(this Result<TItem> result)
             => result.Status.Should().NotBe(ResultStatus.Success);

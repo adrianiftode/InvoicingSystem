@@ -23,6 +23,17 @@ namespace Api.Controllers
             return map(result.Item);
         }
 
+        protected ActionResult<TModel> Result<TItem, TModel>((TItem item, Result result) result, Func<TItem, TModel> map,
+            string messageWhenNotPresent = null)
+        {
+            if (result.result.Status != ResultStatus.Success)
+            {
+                return Fail(result);
+            }
+
+            return map(result.item);
+        }
+
         protected ActionResult<TModel> CreatedResult<TItem, TModel>(Result<TItem> result, Func<TItem, TModel> map,
             string actionName,
             object routeValues)
@@ -33,6 +44,18 @@ namespace Api.Controllers
             }
 
             return CreatedAtAction(actionName, routeValues, map(result.Item));
+        }
+
+        protected ActionResult<TModel> CreatedResult<TItem, TModel>((TItem item, Result result) result, Func<TItem, TModel> map,
+            string actionName,
+            object routeValues)
+        {
+            if (result.result.Status != ResultStatus.Success)
+            {
+                return Fail(result);
+            }
+
+            return CreatedAtAction(actionName, routeValues, map(result.item));
         }
 
         protected ActionResult<TResponse> OkOrNotFound<TResponse>(TResponse response)
@@ -70,6 +93,37 @@ namespace Api.Controllers
                 return BadRequest(new
                 {
                     value = result.Errors
+                });
+            }
+
+            return null;
+        }
+
+        private ActionResult Fail<TItem>((TItem item, Result result) result)
+        {
+            if (result.result.Status == ResultStatus.NotPresent)
+            {
+                if (result.result.Errors.Any())
+                {
+                    return NotFound(new
+                    {
+                        value = result.result.Errors
+                    });
+                }
+
+                return NotFound();
+            }
+
+            if (result.result.Status == ResultStatus.Forbidden)
+            {
+                return Forbid();
+            }
+
+            if (result.result.Status == ResultStatus.InvalidOperation)
+            {
+                return BadRequest(new
+                {
+                    value = result.result.Errors
                 });
             }
 
