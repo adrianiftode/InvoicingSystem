@@ -1,18 +1,16 @@
-﻿using System.Net;
+using FluentAssertions;
+using System.Net;
 using System.Threading.Tasks;
-using Api;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Tests.Extensions.FluentAssertions;
-using Tests.Functional.Extensions;
+using Tests.Fixtures;
 using Xunit;
 
 namespace Tests.Functional
 {
-    public class AuthorizationTests : IClassFixture<WebApplicationFactory<Startup>>
+    public class AuthorizationTests : IClassFixture<InMemoryWebApplicationFactory>
     {
-        private readonly WebApplicationFactory<Startup> _factory;
+        private readonly InMemoryWebApplicationFactory _factory;
 
-        public AuthorizationTests(WebApplicationFactory<Startup> factory)
+        public AuthorizationTests(InMemoryWebApplicationFactory factory)
         {
             _factory = factory;
         }
@@ -31,10 +29,11 @@ namespace Tests.Functional
         }
 
         [Fact]
-        public async Task WithRightSecret_ReturnsOkAndIdentityInfo()
+        public async Task WithRightSecret_ReturnsOk()
         {
             //Arrange
-            var client = _factory.CreateClient("user123");
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Add("X-Api-Key", "user123");
             
             //Act
             var response = await client.GetAsync("/invoices/1");
