@@ -1,7 +1,6 @@
-﻿using Api.Models;
+﻿using FluentAssertions;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Tests.Extensions.FluentAssertions;
 using Tests.Functional.Extensions;
 using Tests.Functional.Fixtures;
 using Xunit;
@@ -17,7 +16,7 @@ namespace Tests.Functional
         public InvoicesControllerUpdateTests(InMemoryWebApplicationFactory factory)
         {
             _factory = factory;
-            _client = _factory               
+            _client = _factory
                .CreateClient("user123");
         }
 
@@ -33,8 +32,8 @@ namespace Tests.Functional
             });
 
             //Assert
-            (await response.Should().BeOk<InvoiceModel>())
-                .And.BeEquivalentTo(new 
+            response.Should().Be200Ok()
+                .And.BeAs(new
                 {
                     InvoiceId = 1,
                     Amount = 50.05m,
@@ -52,8 +51,8 @@ namespace Tests.Functional
             });
 
             //Assert
-            (await response.Should().BeBadRequest())
-                .WithError("amount", "Could not convert string to decimal");
+            response.Should().Be400BadRequest()
+                .And.HaveError("amount", "Could not convert string to decimal*amount*");
         }
 
         [Fact]
@@ -66,8 +65,8 @@ namespace Tests.Functional
             });
 
             //Assert
-            (await response.Should().BeBadRequest())
-                .WithError("Identifier", "The Identifier field is required.");
+            response.Should().Be400BadRequest()
+                .And.HaveError("Identifier", "The Identifier field is required.");
         }
 
         [Fact]
@@ -77,8 +76,8 @@ namespace Tests.Functional
             var response = await _client.PutAsJsonAsync("/invoices", default(object));
 
             //Assert
-            (await response.Should().BeBadRequest())
-                .WithError("", "A non-empty request body is required.");
+            response.Should().Be400BadRequest()
+                .And.HaveErrorMessage("A non-empty request body is required.");
         }
     }
 }

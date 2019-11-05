@@ -1,7 +1,6 @@
-﻿using Api.Models;
+﻿using FluentAssertions;
 using System.Net;
 using System.Threading.Tasks;
-using Tests.Extensions.FluentAssertions;
 using Tests.Functional.Extensions;
 using Tests.Functional.Fixtures;
 using Xunit;
@@ -31,7 +30,7 @@ namespace Tests.Functional
             var response = await client.GetAsync(path);
 
             //Assert
-            await response.Should().BeWithStatusCode(expectedStatusCode);
+            response.Should().Satisfy(c => c.StatusCode == expectedStatusCode);
         }
 
         [Theory]
@@ -47,7 +46,7 @@ namespace Tests.Functional
             var response = await client.GetAsync(path);
 
             //Assert
-            await response.Should().BeWithStatusCode(expectedStatusCode);
+            response.Should().Satisfy(c => c.StatusCode == expectedStatusCode);
         }
 
         [Fact]
@@ -60,13 +59,13 @@ namespace Tests.Functional
             var response = await client.GetAsync("/invoices/1");
 
             //Assert
-            (await response.Should().BeOk<InvoiceModel>())
-                .And.BeEquivalentTo(new
+            response.Should().Be200Ok()
+                .And.BeAs(new
                 {
                     Amount = 150.05m,
                     Identifier = "INV-001",
                     InvoiceId = 1
                 });
-        }        
+        }
     }
 }

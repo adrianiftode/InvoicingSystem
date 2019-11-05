@@ -1,14 +1,14 @@
-﻿using Core;
+﻿using Api.Models;
+using Core;
 using Core.Repositories;
+using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Api.Models;
 using Tests.Functional.Extensions;
 using Tests.Functional.Fixtures;
-using Tests.Extensions.FluentAssertions;
 using Xunit;
 
 namespace Tests.Functional
@@ -44,8 +44,8 @@ namespace Tests.Functional
             });
 
             // Assert
-            (await response.Should().BeCreated<NoteModel>())
-                .And.BeEquivalentTo(new
+            response.Should().Be201Created()
+                .And.BeAs(new NoteModel
                 {
                     Text = "Text",
                     NoteId = 2
@@ -62,8 +62,8 @@ namespace Tests.Functional
             });
 
             //Assert
-            (await response.Should().BeBadRequest())
-                .WithError("invoiceId", "Could not convert string to int");
+            response.Should().Be400BadRequest()
+                .And.HaveError("invoiceId", "*Could not convert string to integer*invoiceId*");
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace Tests.Functional
             });
 
             //Assert
-            await response.Should().BeNotFound();
+            response.Should().Be404NotFound();
         }
 
         [Fact]
@@ -96,8 +96,8 @@ namespace Tests.Functional
             });
 
             //Assert
-            (await response.Should().BeBadRequest())
-                .WithError("Text", "The Text field is required.");
+            response.Should().Be400BadRequest()
+                .And.HaveError("Text", "The Text field is required.");
 
         }
 
@@ -108,8 +108,8 @@ namespace Tests.Functional
             var response = await _defaultClient.PostAsJsonAsync("/notes", default(object));
 
             //Assert
-            (await response.Should().BeBadRequest())
-                .WithError("", "A non-empty request body is required.");
+            response.Should().Be400BadRequest()
+                .And.HaveErrorMessage("A non-empty request body is required.");
         }
 
         [Fact]
@@ -132,8 +132,8 @@ namespace Tests.Functional
             });
 
             //Assert
-            (await response.Should().BeCreated<NoteModel>())
-                .And.BeEquivalentTo(new
+            response.Should().Be201Created()
+                .And.BeAs(new NoteModel
                 {
                     Text = "text"
                 });

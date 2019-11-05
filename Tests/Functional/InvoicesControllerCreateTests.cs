@@ -1,12 +1,12 @@
 ﻿using Api.Models;
 using Core;
 using Core.Repositories;
+using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Tests.Extensions.FluentAssertions;
 using Tests.Functional.Extensions;
 using Tests.Functional.Fixtures;
 using Xunit;
@@ -42,8 +42,8 @@ namespace Tests.Functional
             });
 
             //Assert
-            (await response.Should().BeCreated<InvoiceModel>())
-                .And.BeEquivalentTo(new InvoiceModel
+            response.Should().Be201Created()
+                .And.BeAs(new InvoiceModel
                 {
                     Amount = 150.05m,
                     Identifier = "INV-001"
@@ -60,8 +60,8 @@ namespace Tests.Functional
             });
 
             //Assert
-            (await response.Should().BeBadRequest())
-                .WithError("amount", "Could not convert string to decimal");
+            response.Should().Be400BadRequest()
+                .And.HaveError("amount", "*string*decimal*");
         }
 
         [Fact]
@@ -74,8 +74,8 @@ namespace Tests.Functional
             });
 
             //Assert
-            (await response.Should().BeBadRequest())
-                .WithError("Identifier", "The Identifier field is required.");
+            response.Should().Be400BadRequest()
+                .And.HaveError("Identifier", "*Identifier*required*");
         }
 
         [Fact]
@@ -85,9 +85,8 @@ namespace Tests.Functional
             var response = await _client.PostAsJsonAsync("/invoices", default(object));
 
             //Assert
-            //Assert
-            (await response.Should().BeBadRequest())
-                .WithError("", "A non-empty request body is required.");
+            response.Should().Be400BadRequest()
+                .And.HaveErrorMessage("A non-empty request body is required.");
         }
 
         [Fact]
@@ -110,8 +109,8 @@ namespace Tests.Functional
             });
 
             //Assert
-            (await response.Should().BeCreated<InvoiceModel>())
-                .And.BeEquivalentTo(new InvoiceModel
+            response.Should().Be201Created()
+                .And.BeAs(new InvoiceModel
                 {
                     Identifier = "INV-001",
                     Amount = 150.05m
