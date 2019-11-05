@@ -7,10 +7,11 @@
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions.Analyzers" Version="0.11.4" />
+    <PackageReference Include="FluentAssertions.Web" Version="0.1.69" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="2.2.0" />
 
-    <PackageReference Include="FluentAssertions" Version="5.5.3" />
+    <PackageReference Include="FluentAssertions" Version="5.9.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.0" />
@@ -27,10 +28,5 @@
     <ProjectReference Include="..\Database\Database.csproj" />
     <ProjectReference Include="..\Api\Api.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Fixtures\" />
-  </ItemGroup>
-
 
 </Project>

@@ -1,6 +1,5 @@
-using System.Net;
+using FluentAssertions;
 using System.Threading.Tasks;
-using Tests.Extensions.FluentAssertions;
 using Tests.Functional.Extensions;
 using Tests.Functional.Fixtures;
 using Xunit;
@@ -26,7 +25,7 @@ namespace Tests.Functional
             var response = await client.GetAsync("/invoices/1");
 
             //Assert
-            await response.Should().BeWithStatusCode(HttpStatusCode.Unauthorized);
+            response.Should().Be401Unauthorized();
         }
 
         [Fact]
@@ -40,7 +39,7 @@ namespace Tests.Functional
             var response = await client.GetAsync("/invoices/1");
 
             //Assert
-            await response.Should().BeWithStatusCode(HttpStatusCode.OK);
+            response.Should().Be200Ok();
         }
 
         [Fact]
@@ -53,7 +52,7 @@ namespace Tests.Functional
             var response = await client.GetAsync("/invoices/1");
 
             //Assert
-            await response.Should().BeWithStatusCode(HttpStatusCode.Unauthorized);
+            response.Should().Be401Unauthorized();
         }
     }
 }
