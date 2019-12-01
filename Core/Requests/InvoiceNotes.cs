@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Core.Repositories;
+using MediatR;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Repositories;
-using MediatR;
 
 namespace Core
 {
@@ -20,7 +20,7 @@ namespace Core
             _invoicesRepository = invoicesRepository;
         }
 
-        public async Task<IReadOnlyCollection<Note>> Handle(InvoiceNotesQuery request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IReadOnlyCollection<Note>> Handle(InvoiceNotesQuery request, CancellationToken cancellationToken = default)
         {
             var notes = await _invoicesRepository.GetNotesBy(request.InvoiceId);
             return notes;

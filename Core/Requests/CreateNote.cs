@@ -1,8 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Core.Repositories;
+﻿using Core.Repositories;
 using FluentValidation;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Core
 {
@@ -42,10 +42,10 @@ namespace Core
             _invoicesRepository = invoicesRepository;
         }
 
-        public async Task<Result<Note>> Handle(CreateNoteRequest request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Result<Note>> Handle(CreateNoteRequest request, CancellationToken cancellationToken = default)
         {
             var invoice = await _invoicesRepository.Get(request.InvoiceId);
-           
+
             var note = invoice.AddNote(request.Text, request.User.GetIdentity());
 
             await _notesRepository.Create(note);

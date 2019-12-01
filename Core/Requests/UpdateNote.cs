@@ -58,7 +58,7 @@ namespace Core
             _notesRepository = notesRepository;
         }
 
-        public async Task<Result<Note>> Handle(UpdateNoteRequest request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Result<Note>> Handle(UpdateNoteRequest request, CancellationToken cancellationToken = default)
         {
             var note = await _notesRepository.Get(request.NoteId);
 

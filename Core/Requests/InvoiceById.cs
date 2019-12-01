@@ -1,7 +1,7 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Core.Repositories;
+﻿using Core.Repositories;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Core
 {
@@ -19,7 +19,7 @@ namespace Core
             _invoicesRepository = invoicesRepository;
         }
 
-        public async Task<Invoice> Handle(InvoiceByIdQuery request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Invoice> Handle(InvoiceByIdQuery request, CancellationToken cancellationToken = default)
         {
             var invoice = await _invoicesRepository.Get(request.Id);
             return invoice;

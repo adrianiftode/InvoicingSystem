@@ -36,7 +36,7 @@ namespace Tests.Extensions.Database
             return context;
         }
 
-        private static ConcurrentDictionary<string, SqliteConnection> Connections = new ConcurrentDictionary<string, SqliteConnection>();
+        private static readonly ConcurrentDictionary<string, SqliteConnection> Connections = new ConcurrentDictionary<string, SqliteConnection>();
 
         private static SqliteConnection GetSqliteConnection(string databaseName)
             =>

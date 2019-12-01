@@ -9,7 +9,7 @@ namespace Tests.Database
 {
     [Trait(Traits.Category, Traits.IntegrationTests)]
 
-    public class SqlServerMigrationTests : IDisposable
+    public sealed class SqlServerMigrationTests : IDisposable
     {
         private const string IntegrationDatabase = "invoicing-integration";
         private const string IntegrationTransientDatabase = "invoicing-transient";
