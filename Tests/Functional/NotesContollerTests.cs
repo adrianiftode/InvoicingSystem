@@ -31,7 +31,7 @@ namespace Tests.Functional
             var response = await client.GetAsync(path);
 
             //Assert
-            response.Should().Satisfy(c => c.StatusCode == expectedStatusCode);
+            response.Should().HaveHttpStatusCode(expectedStatusCode);
         }
 
         [Fact]
