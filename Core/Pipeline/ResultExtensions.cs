@@ -6,7 +6,7 @@ namespace Core.Pipeline
     internal static class ResultExtensions
     {
         public static TResponse ConvertTo<TResponse>(this Result result)
-        {            
+        {
             var responseType = typeof(TResponse);
 
             // construct Result<TItem>
@@ -28,7 +28,7 @@ namespace Core.Pipeline
                 return (TResponse)Activator.CreateInstance(genericType, null, result);
             }
 
-            return default(TResponse);
+            return default;
         }
     }
 }

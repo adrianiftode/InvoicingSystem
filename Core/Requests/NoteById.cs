@@ -1,7 +1,7 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Core.Repositories;
+﻿using Core.Repositories;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Core
 {
@@ -19,7 +19,7 @@ namespace Core
             _notesRepository = notesRepository;
         }
 
-        public async Task<Note> Handle(NoteByIdQuery request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Note> Handle(NoteByIdQuery request, CancellationToken cancellationToken = default)
         {
             var note = await _notesRepository.Get(request.Id);
             return note;

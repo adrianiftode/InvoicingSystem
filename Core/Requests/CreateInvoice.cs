@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Pipeline;
+﻿using Core.Pipeline;
 using Core.Repositories;
 using FluentValidation;
 using FluentValidation.Validators;
@@ -44,11 +43,6 @@ namespace Core
             var anyWithNewIdentifier = await _repository.GetByIdentifier(request.Identifier);
             return anyWithNewIdentifier == null;
         }
-
-        public async Task<bool> NotAlreadyExists(CreateInvoiceRequest request, CancellationToken cancellationToken)
-        {
-            return await _repository.GetByIdentifier(request.Identifier) == null;
-        }
     }
 
     public class CreateInvoiceHandler : IRequestHandler<CreateInvoiceRequest, (Invoice invoice, Result result)>
@@ -59,7 +53,7 @@ namespace Core
         {
             _invoicesRepository = invoicesRepository;
         }
-        public async Task<(Invoice invoice, Result result)> Handle(CreateInvoiceRequest request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<(Invoice invoice, Result result)> Handle(CreateInvoiceRequest request, CancellationToken cancellationToken = default)
         {
             var invoice = new Invoice
             {

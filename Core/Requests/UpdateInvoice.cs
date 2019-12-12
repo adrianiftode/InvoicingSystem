@@ -1,10 +1,10 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Core.Pipeline;
+﻿using Core.Pipeline;
 using Core.Repositories;
 using FluentValidation;
 using FluentValidation.Validators;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Core
 {
@@ -38,9 +38,9 @@ namespace Core
             return invoice != null;
         }
 
-        private async Task<bool> NotBeUsedByADifferentInvoice(UpdateInvoiceRequest request, 
-            string property, 
-            PropertyValidatorContext propertyValidatorContext, 
+        private async Task<bool> NotBeUsedByADifferentInvoice(UpdateInvoiceRequest request,
+            string property,
+            PropertyValidatorContext propertyValidatorContext,
             CancellationToken cancellationToken)
         {
             var anyWithNewIdentifier = await _repository.GetByIdentifier(request.Identifier);
@@ -73,7 +73,7 @@ namespace Core
         {
             _invoicesRepository = invoicesRepository;
         }
-        public async Task<(Invoice invoice, Result result)> Handle(UpdateInvoiceRequest request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<(Invoice invoice, Result result)> Handle(UpdateInvoiceRequest request, CancellationToken cancellationToken = default)
         {
             var invoice = await _invoicesRepository.Get(request.InvoiceId);
 

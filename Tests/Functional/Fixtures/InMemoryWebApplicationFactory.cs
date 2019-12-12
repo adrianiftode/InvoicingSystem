@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Api;
+﻿using Api;
 using Database;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +7,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 using Tests.Functional.Extensions;
 
 namespace Tests.Functional.Fixtures
@@ -38,7 +38,7 @@ namespace Tests.Functional.Fixtures
 
             builder.ConfigureTestServices(services =>
             {
-                var sp = ServiceCollectionContainerBuilderExtensions.BuildServiceProvider(services);
+                var sp = services.BuildServiceProvider();
 
                 using (var scope = sp.CreateScope())
                 {

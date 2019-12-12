@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Core;
 
@@ -8,7 +9,7 @@ namespace Api.Models
     {
         public int InvoiceId { get; set; }
         public decimal Amount { get; set; }
-        public IReadOnlyCollection<NoteModel> Notes { get; set; } = new NoteModel[] {};
+        public IReadOnlyCollection<NoteModel> Notes { get; set; } = Array.Empty<NoteModel>();
         public string Identifier { get; set; }
     }
 

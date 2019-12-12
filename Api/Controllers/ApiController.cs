@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
-using Core;
 
 
 namespace Api.Controllers
@@ -12,8 +12,7 @@ namespace Api.Controllers
     [Route("[controller]")]
     public class ApiController : ControllerBase
     {
-        protected ActionResult<TModel> Result<TItem, TModel>(Result<TItem> result, Func<TItem, TModel> map,
-            string messageWhenNotPresent = null)
+        protected ActionResult<TModel> Result<TItem, TModel>(Result<TItem> result, Func<TItem, TModel> map)
         {
             if (result.Status != ResultStatus.Success)
             {
@@ -23,8 +22,7 @@ namespace Api.Controllers
             return map(result.Item);
         }
 
-        protected ActionResult<TModel> Result<TItem, TModel>((TItem item, Result result) result, Func<TItem, TModel> map,
-            string messageWhenNotPresent = null)
+        protected ActionResult<TModel> Result<TItem, TModel>((TItem item, Result result) result, Func<TItem, TModel> map)
         {
             if (result.result.Status != ResultStatus.Success)
             {
