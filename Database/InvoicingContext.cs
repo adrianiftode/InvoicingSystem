@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Core;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using Core;
 
 namespace Database
 {

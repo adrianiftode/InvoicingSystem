@@ -18,9 +18,7 @@ namespace Core
         private readonly INotesRepository _notesRepository;
 
         public UpdateNoteAuthorization(INotesRepository notesRepository)
-        {
-            _notesRepository = notesRepository;
-        }
+            => _notesRepository = notesRepository;
 
         public async Task<bool> Authorize(UpdateNoteRequest request)
         {
@@ -53,10 +51,7 @@ namespace Core
     {
         private readonly INotesRepository _notesRepository;
 
-        public UpdateNoteHandler(INotesRepository notesRepository)
-        {
-            _notesRepository = notesRepository;
-        }
+        public UpdateNoteHandler(INotesRepository notesRepository) => _notesRepository = notesRepository;
 
         public async Task<Result<Note>> Handle(UpdateNoteRequest request, CancellationToken cancellationToken = default)
         {

@@ -12,10 +12,7 @@ namespace Tests.Functional
     {
         private readonly InMemoryWebApplicationFactory _factory;
 
-        public NotesControllerTests(InMemoryWebApplicationFactory factory)
-        {
-            _factory = factory;
-        }
+        public NotesControllerTests(InMemoryWebApplicationFactory factory) => _factory = factory;
 
         [Theory]
         [InlineData("notes", HttpStatusCode.NotFound)]

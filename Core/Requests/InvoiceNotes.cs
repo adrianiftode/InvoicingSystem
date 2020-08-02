@@ -16,9 +16,7 @@ namespace Core
         private readonly IInvoicesRepository _invoicesRepository;
 
         public InvoiceNotesHandler(IInvoicesRepository invoicesRepository)
-        {
-            _invoicesRepository = invoicesRepository;
-        }
+            => _invoicesRepository = invoicesRepository;
 
         public async Task<IReadOnlyCollection<Note>> Handle(InvoiceNotesQuery request, CancellationToken cancellationToken = default)
         {

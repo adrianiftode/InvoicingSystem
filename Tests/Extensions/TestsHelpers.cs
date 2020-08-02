@@ -1,7 +1,7 @@
-using System.Security.Claims;
-using System.Security.Principal;
 using Core;
 using FluentAssertions;
+using System.Security.Claims;
+using System.Security.Principal;
 
 namespace Tests.Extensions
 {

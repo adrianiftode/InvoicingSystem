@@ -10,10 +10,7 @@ namespace Tests.Functional
     {
         private readonly InMemoryWebApplicationFactory _factory;
 
-        public AuthorizationTests(InMemoryWebApplicationFactory factory)
-        {
-            _factory = factory;
-        }
+        public AuthorizationTests(InMemoryWebApplicationFactory factory) => _factory = factory;
 
         [Fact]
         public async Task WithoutXApiKey_ReturnsUnauthorized()

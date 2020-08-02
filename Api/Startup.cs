@@ -15,10 +15,7 @@ namespace Api
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        public Startup(IConfiguration configuration) => Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 
@@ -35,8 +32,7 @@ namespace Api
                 .AddRepositories(Configuration)
                 .AddMvc()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<UpdateNoteValidator>())
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                ;
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddMediatR();
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AttachUser<,>));

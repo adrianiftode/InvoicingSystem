@@ -17,9 +17,7 @@ namespace Core
     public class CreateInvoiceAuthorization : IAuthorize<CreateInvoiceRequest>
     {
         public Task<bool> Authorize(CreateInvoiceRequest request)
-        {
-            return Task.FromResult(request.User != null && request.User.IsAdmin());
-        }
+            => Task.FromResult(request.User != null && request.User.IsAdmin());
     }
 
     public class CreateInvoiceValidator : AbstractValidator<CreateInvoiceRequest>
@@ -49,10 +47,7 @@ namespace Core
     {
         private readonly IInvoicesRepository _invoicesRepository;
 
-        public CreateInvoiceHandler(IInvoicesRepository invoicesRepository)
-        {
-            _invoicesRepository = invoicesRepository;
-        }
+        public CreateInvoiceHandler(IInvoicesRepository invoicesRepository) => _invoicesRepository = invoicesRepository;
         public async Task<(Invoice invoice, Result result)> Handle(CreateInvoiceRequest request, CancellationToken cancellationToken = default)
         {
             var invoice = new Invoice

@@ -1,6 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Core
 {
@@ -35,7 +33,7 @@ namespace Core
         public ResultStatus Status { get; private set; } = ResultStatus.Success;
         public TItem Item { get; private set; }
         public IReadOnlyCollection<string> Errors { get; private set; } = new List<string>();
-        
+
         public static implicit operator Result<TItem>(Result result) => new Result<TItem>
         {
             Errors = result.Errors,

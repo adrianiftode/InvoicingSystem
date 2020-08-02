@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using Core;
+﻿using Core;
 using FluentAssertions;
+using System.Threading.Tasks;
 using Tests.Extensions;
 using Xunit;
 
@@ -10,10 +10,7 @@ namespace Tests.Core
     {
         private readonly CreateInvoiceAuthorization _sut;
 
-        public OnlyAdminsCreateCreateInvoicesIssue()
-        {
-            _sut = new CreateInvoiceAuthorization();
-        }
+        public OnlyAdminsCreateCreateInvoicesIssue() => _sut = new CreateInvoiceAuthorization();
 
         [Fact]
         public async Task Create_WithUserType_ShouldNotCreatesAnInvoice()

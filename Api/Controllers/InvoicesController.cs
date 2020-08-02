@@ -12,10 +12,7 @@ namespace Api.Controllers
     {
         private readonly IMediator _mediator;
 
-        public InvoicesController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        public InvoicesController(IMediator mediator) => _mediator = mediator;
 
         [HttpGet("{id}")]
         public async Task<ActionResult<InvoiceModel>> Get(int id)
@@ -36,7 +33,7 @@ namespace Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(InvoiceModel))]
-        public async Task<ActionResult<InvoiceModel>> Create([FromBody]CreateInvoiceRequestModel request)
+        public async Task<ActionResult<InvoiceModel>> Create([FromBody] CreateInvoiceRequestModel request)
         {
             var result = await _mediator.Send(new CreateInvoiceRequest
             {
@@ -52,7 +49,7 @@ namespace Api.Controllers
 
         [HttpPut]
         [ProducesResponseType(201, Type = typeof(InvoiceModel))]
-        public async Task<ActionResult<InvoiceModel>> Update([FromBody]UpdateInvoiceRequestModel request)
+        public async Task<ActionResult<InvoiceModel>> Update([FromBody] UpdateInvoiceRequestModel request)
         {
             var result = await _mediator.Send(new UpdateInvoiceRequest
             {

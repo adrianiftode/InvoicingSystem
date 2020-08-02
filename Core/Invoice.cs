@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Core
 {
@@ -20,6 +19,6 @@ namespace Core
             };
             Notes.Add(newNote);
             return newNote;
-        }      
+        }
     }
 }

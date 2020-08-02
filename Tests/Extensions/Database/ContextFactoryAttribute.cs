@@ -8,10 +8,7 @@ namespace Tests.Extensions.Database
     internal sealed class ContextsAttribute : MemberDataAttributeBase
     {
         public ContextsAttribute()
-            : base(nameof(ContextProvider.Contexts), null)
-        {
-            MemberType = typeof(ContextProvider);
-        }
+            : base(nameof(ContextProvider.Contexts), null) => MemberType = typeof(ContextProvider);
 
         protected override object[] ConvertDataItem(MethodInfo testMethod, object item)
         {

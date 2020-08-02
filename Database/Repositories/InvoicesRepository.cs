@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Core;
 using Core.Repositories;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Core;
-using Microsoft.EntityFrameworkCore;
 
 namespace Database.Repositories
 {
@@ -11,10 +11,7 @@ namespace Database.Repositories
     {
         private readonly InvoicingContext _context;
 
-        public InvoicesRepository(InvoicingContext context)
-        {
-            _context = context;
-        }
+        public InvoicesRepository(InvoicingContext context) => _context = context;
 
         public async Task<Invoice> Get(int id)
         {

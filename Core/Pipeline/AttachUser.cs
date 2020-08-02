@@ -10,10 +10,7 @@ namespace Core.Pipeline
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AttachUser(IHttpContextAccessor httpContextAccessor)
-        {
-            _httpContextAccessor = httpContextAccessor;
-        }
+        public AttachUser(IHttpContextAccessor httpContextAccessor) => _httpContextAccessor = httpContextAccessor;
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
             request.User = _httpContextAccessor.HttpContext.User;

@@ -15,9 +15,7 @@ namespace Core
         private readonly IInvoicesRepository _invoicesRepository;
 
         public InvoiceByIdHandler(IInvoicesRepository invoicesRepository)
-        {
-            _invoicesRepository = invoicesRepository;
-        }
+            => _invoicesRepository = invoicesRepository;
 
         public async Task<Invoice> Handle(InvoiceByIdQuery request, CancellationToken cancellationToken = default)
         {
