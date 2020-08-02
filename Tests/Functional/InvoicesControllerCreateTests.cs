@@ -61,7 +61,7 @@ namespace Tests.Functional
 
             //Assert
             response.Should().Be400BadRequest()
-                .And.HaveError("amount", "*string*decimal*");
+                .And.HaveError("$.amount", "*converted*Decimal*$.amount*");
         }
 
         [Fact]
