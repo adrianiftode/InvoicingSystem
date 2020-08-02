@@ -11,10 +11,7 @@ namespace Tests.Functional
     {
         private readonly InMemoryWebApplicationFactory _factory;
 
-        public InvoicesControllerTests(InMemoryWebApplicationFactory factory)
-        {
-            _factory = factory;
-        }
+        public InvoicesControllerTests(InMemoryWebApplicationFactory factory) => _factory = factory;
 
         [Theory]
         [InlineData("invoices", HttpStatusCode.NotFound)]

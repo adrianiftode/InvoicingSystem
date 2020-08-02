@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentValidation.Results;
 
 namespace Core.Pipeline
 {
@@ -13,10 +13,7 @@ namespace Core.Pipeline
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-        public Validation(IEnumerable<IValidator<TRequest>> validators)
-        {
-            _validators = validators;
-        }
+        public Validation(IEnumerable<IValidator<TRequest>> validators) => _validators = validators;
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
@@ -33,11 +30,11 @@ namespace Core.Pipeline
                 .Where(f => f != null)
                 .ToList();
 
-            
+
             if (failures.Count != 0)
             {
                 Result failResult;
-                
+
                 var codes = failures.Select(c => c.ErrorCode).ToList();
                 if (codes.Any(c => c == Result.Forbidden.StatusCode))
                 {
@@ -45,11 +42,11 @@ namespace Core.Pipeline
                 }
                 else if (codes.Any(c => c == Result.NotPresent.StatusCode))
                 {
-                    failResult = Result.NotPresent;                    
+                    failResult = Result.NotPresent;
                 }
                 else
                 {
-                    failResult = Result.Error(failures.Select(c=>c.ErrorMessage).ToArray());
+                    failResult = Result.Error(failures.Select(c => c.ErrorMessage).ToArray());
                 }
 
                 return failResult.ConvertTo<TResponse>();

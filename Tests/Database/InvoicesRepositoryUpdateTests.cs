@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Core;
 using Database;
 using Database.Repositories;
 using FluentAssertions;
+using System;
 using System.Threading.Tasks;
-using Core;
 using Tests.Extensions.Database;
 using Xunit;
 
@@ -24,7 +24,7 @@ namespace Tests.Database
                 var invoice = new Invoice
                 {
                     InvoiceId = nextInvoiceId,
-                    Amount =  1,
+                    Amount = 1,
                     Identifier = "INV-" + nextInvoiceId,
                     UpdatedBy = "Test"
                 };

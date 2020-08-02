@@ -11,10 +11,7 @@ namespace Api.Controllers
     {
         private readonly IMediator _mediator;
 
-        public NotesController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        public NotesController(IMediator mediator) => _mediator = mediator;
 
         [HttpGet("{id}")]
         public async Task<ActionResult<NoteModel>> Get(int id)
@@ -22,7 +19,7 @@ namespace Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(NoteModel))]
-        public async Task<ActionResult<NoteModel>> Create([FromBody]CreateNoteRequestModel requestModel)
+        public async Task<ActionResult<NoteModel>> Create([FromBody] CreateNoteRequestModel requestModel)
         {
             var result = await _mediator.Send(new CreateNoteRequest
             {
@@ -39,7 +36,7 @@ namespace Api.Controllers
 
         [HttpPut]
         [ProducesResponseType(201, Type = typeof(NoteModel))]
-        public async Task<ActionResult<NoteModel>> Update([FromBody]UpdateNoteRequestModel requestModel)
+        public async Task<ActionResult<NoteModel>> Update([FromBody] UpdateNoteRequestModel requestModel)
             => Result(await _mediator.Send(new UpdateNoteRequest
             {
                 NoteId = requestModel.NoteId,

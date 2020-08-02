@@ -25,10 +25,7 @@ namespace Core
                 .WithMessage("Note could not be created because the targeted invoice is not present.");
         }
 
-        public async Task<bool> ValidateExists(CreateNoteRequest request, CancellationToken cancellationToken)
-        {
-            return await _invoicesRepository.Get(request.InvoiceId) != null;
-        }
+        public async Task<bool> ValidateExists(CreateNoteRequest request, CancellationToken cancellationToken) => await _invoicesRepository.Get(request.InvoiceId) != null;
     }
 
     public class CreateNoteHandler : IRequestHandler<CreateNoteRequest, Result<Note>>

@@ -1,10 +1,10 @@
-﻿using System.Net.Http;
-using System.Threading;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using System.Net.Http;
+using System.Threading;
 
 namespace Tests.Functional.Extensions
 {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Core;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
@@ -6,7 +7,6 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using Core;
 
 namespace Api.Authentication
 {
@@ -18,15 +18,13 @@ namespace Api.Authentication
     {
         private readonly Dictionary<string, ClaimsPrincipal> _users;
         public CustomAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
-        {
-            _users = new Dictionary<string, ClaimsPrincipal>
+            => _users = new Dictionary<string, ClaimsPrincipal>
             {
                 {"admin123", CreateFrom("1", Roles.Admin)},
                 {"admin345", CreateFrom("2", Roles.Admin)},
                 {"user123", CreateFrom("3", Roles.User)},
                 {"user345", CreateFrom("4", Roles.User)},
             };
-        }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {

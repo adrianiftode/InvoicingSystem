@@ -1,11 +1,7 @@
 ﻿using Core;
 using Core.Pipeline;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -13,7 +9,7 @@ namespace Tests.Core.Pipeline
 {
     public class TestRequest : Request
     {
-        
+
     }
 
     public class AuthorizationTests
@@ -24,7 +20,7 @@ namespace Tests.Core.Pipeline
             // Arrange
             var authorizeMock = new Mock<IAuthorize<TestRequest>>();
             authorizeMock.Setup(c => c.Authorize(It.IsAny<TestRequest>())).ReturnsAsync(false);
-            var loggerMock = new Mock<ILogger<Authorization<TestRequest, Result>>>();            
+            var loggerMock = new Mock<ILogger<Authorization<TestRequest, Result>>>();
             var sut = new Authorization<TestRequest, Result>(authorizeMock.Object, loggerMock.Object);
 
             // Act

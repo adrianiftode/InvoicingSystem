@@ -15,9 +15,7 @@ namespace Core
         private readonly INotesRepository _notesRepository;
 
         public NoteByIdHandler(INotesRepository notesRepository)
-        {
-            _notesRepository = notesRepository;
-        }
+            => _notesRepository = notesRepository;
 
         public async Task<Note> Handle(NoteByIdQuery request, CancellationToken cancellationToken = default)
         {

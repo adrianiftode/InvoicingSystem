@@ -1,6 +1,6 @@
-﻿using Core.Repositories;
+﻿using Core;
+using Core.Repositories;
 using System.Threading.Tasks;
-using Core;
 
 namespace Database.Repositories
 {
@@ -8,10 +8,7 @@ namespace Database.Repositories
     {
         private readonly InvoicingContext _context;
 
-        public NotesRepository(InvoicingContext context)
-        {
-            _context = context;
-        }
+        public NotesRepository(InvoicingContext context) => _context = context;
 
         public Task<Note> Get(int id) => _context.Notes.FindAsync(id);
 

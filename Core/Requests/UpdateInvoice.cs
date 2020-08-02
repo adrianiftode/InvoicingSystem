@@ -52,10 +52,7 @@ namespace Core
     {
         private readonly IInvoicesRepository _repository;
 
-        public UpdateInvoiceAuthorization(IInvoicesRepository invoicesRepository)
-        {
-            _repository = invoicesRepository;
-        }
+        public UpdateInvoiceAuthorization(IInvoicesRepository invoicesRepository) => _repository = invoicesRepository;
 
         public async Task<bool> Authorize(UpdateInvoiceRequest request)
         {
@@ -69,10 +66,7 @@ namespace Core
     {
         private readonly IInvoicesRepository _invoicesRepository;
 
-        public UpdateInvoiceHandler(IInvoicesRepository invoicesRepository)
-        {
-            _invoicesRepository = invoicesRepository;
-        }
+        public UpdateInvoiceHandler(IInvoicesRepository invoicesRepository) => _invoicesRepository = invoicesRepository;
         public async Task<(Invoice invoice, Result result)> Handle(UpdateInvoiceRequest request, CancellationToken cancellationToken = default)
         {
             var invoice = await _invoicesRepository.Get(request.InvoiceId);
