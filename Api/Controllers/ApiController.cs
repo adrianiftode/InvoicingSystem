@@ -1,8 +1,8 @@
 ﻿using Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Internal;
 using System;
+using System.Linq;
 
 
 namespace Api.Controllers

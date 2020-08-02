@@ -63,7 +63,7 @@ namespace Tests.Functional
 
             //Assert
             response.Should().Be400BadRequest()
-                .And.HaveError("invoiceId", "*Could not convert string to integer*invoiceId*");
+                .And.HaveError("$.invoiceId", "*converted*Int32*invoiceId*");
         }
 
         [Fact]

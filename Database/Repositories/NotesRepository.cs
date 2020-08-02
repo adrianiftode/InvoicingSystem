@@ -10,7 +10,11 @@ namespace Database.Repositories
 
         public NotesRepository(InvoicingContext context) => _context = context;
 
-        public Task<Note> Get(int id) => _context.Notes.FindAsync(id);
+        public async Task<Note> Get(int id)
+        {
+            var note = await _context.Notes.FindAsync(id);
+            return note;
+        }
 
         public async Task Create(Note note)
         {

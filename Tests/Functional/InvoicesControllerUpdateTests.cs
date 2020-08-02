@@ -52,7 +52,7 @@ namespace Tests.Functional
 
             //Assert
             response.Should().Be400BadRequest()
-                .And.HaveError("amount", "Could not convert string to decimal*amount*");
+                .And.HaveError("$.amount", "*converted*Decimal*amount*");
         }
 
         [Fact]

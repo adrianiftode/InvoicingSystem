@@ -14,7 +14,7 @@ namespace Tests.Functional
         public InvoicesControllerTests(InMemoryWebApplicationFactory factory) => _factory = factory;
 
         [Theory]
-        [InlineData("invoices", HttpStatusCode.NotFound)]
+        [InlineData("invoices", HttpStatusCode.MethodNotAllowed)]
         [InlineData("invoices/1", HttpStatusCode.OK)]
         [InlineData("invoices/3", HttpStatusCode.NotFound)]
         [InlineData("invoices/string-like-value", HttpStatusCode.BadRequest)]

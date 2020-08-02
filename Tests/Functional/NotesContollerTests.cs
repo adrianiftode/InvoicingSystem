@@ -15,7 +15,7 @@ namespace Tests.Functional
         public NotesControllerTests(InMemoryWebApplicationFactory factory) => _factory = factory;
 
         [Theory]
-        [InlineData("notes", HttpStatusCode.NotFound)]
+        [InlineData("notes", HttpStatusCode.MethodNotAllowed)]
         [InlineData("notes/1", HttpStatusCode.OK)]
         [InlineData("notes/333", HttpStatusCode.NotFound)]
         [InlineData("notes/string-like-value", HttpStatusCode.BadRequest)]

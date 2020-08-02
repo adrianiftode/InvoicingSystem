@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System.IO;
 using System.Net;
+using System.Text.Json;
 
 namespace Api
 {
@@ -22,20 +21,14 @@ namespace Api
                 {
                     var error = new
                     {
-                        value = new[] { "Internal Server Error." },
-                        error = contextFeature.Error
+                        type = contextFeature.Error.GetType().ToString(),
+                        message = contextFeature.Error.Message,
+                        body = contextFeature.Error.ToString()
                     };
 
-                    using (var writer = new StreamWriter(context.Response.Body))
-                    {
-                        var serializer = new JsonSerializer
-                        {
-                            ContractResolver = new CamelCasePropertyNamesContractResolver(),
-
-                        };
-                        serializer.Serialize(writer, error);
-                        await writer.FlushAsync().ConfigureAwait(false);
-                    }
+                    await using var writer = new StreamWriter(context.Response.Body);
+                    await JsonSerializer.SerializeAsync(context.Response.Body, error);
+                    await writer.FlushAsync();
                 }
             });
         });

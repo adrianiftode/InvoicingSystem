@@ -38,7 +38,7 @@ namespace Tests.Database
         {
             //On a CI machine this should come from some configuration value and the db needs to be accessible
             var options = new DbContextOptionsBuilder<InvoicingContext>()
-                .UseSqlServer($@"Server=(localdb)\.\IIS;Database={databaseName};Trusted_Connection=True;")
+                .UseSqlServer($@"Server=.;Database={databaseName};Trusted_Connection=True;")
                 .Options;
             var context = new InvoicingContext(options);
             return context;
