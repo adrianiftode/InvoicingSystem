@@ -7,11 +7,6 @@ using Xunit;
 
 namespace Tests.Core.Pipeline
 {
-    public class TestRequest : Request
-    {
-
-    }
-
     public class AuthorizationTests
     {
         [Fact]
