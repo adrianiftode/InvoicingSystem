@@ -1,11 +1,12 @@
-﻿using Core;
+﻿using Audit.EntityFramework;
+using Core;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
 namespace Database
 {
-    public class InvoicingContext : DbContext
+    public class InvoicingContext : AuditDbContext
     {
         public InvoicingContext(DbContextOptions options) : base(options)
         {

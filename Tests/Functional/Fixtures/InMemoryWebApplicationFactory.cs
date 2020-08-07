@@ -1,4 +1,5 @@
 ﻿using Api;
+using Audit.Core.Providers;
 using Database;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
@@ -17,6 +18,9 @@ namespace Tests.Functional.Fixtures
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            Audit.Core.Configuration.ResetCustomActions();
+            Audit.Core.Configuration.DataProvider = new NullDataProvider();
+
             builder.ConfigureAppConfiguration((hostingContext, config) =>
             {
                 config.AddInMemoryCollection(new Dictionary<string, string>
