@@ -5,6 +5,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace Api
 {
@@ -23,7 +24,7 @@ namespace Api
                 .Build())
                 .Table("AuditEvents"));
 
-            var host = CreateWebHostBuilder(args).Build();
+            var host = CreateHostBuilder(args).Build();
             await host.RunAsync();
 
             Audit.Core.Configuration
@@ -34,7 +35,11 @@ namespace Api
                 });
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
-            => WebHost.CreateDefaultBuilder(args).UseStartup<Startup>();
+        public static IHostBuilder CreateHostBuilder(string[] args)
+            => Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
     }
 }
